@@ -14,6 +14,11 @@ Um sistema de gerenciamento de chamados construído com React no frontend e Node
 - **Controle de Versão:** Git, GitHub
 - **Outros:** Deploy em nuvem, Testes, Acessibilidade, Uso de API
 
+## Como Rodar (Em Construção)
+
+## Demonstração (Em Breve)
+
+---
 ## Divisão de Função
 
 ### Backend
@@ -26,10 +31,6 @@ Um sistema de gerenciamento de chamados construído com React no frontend e Node
 - **Nome 3** — nome3@aluno.univesp.br
 
 ---
-
-## Como Rodar (Em Construção)
-
-## Demonstração (Em Breve)
 
 ## Contato
 [Seu Nome] - [Link do seu LinkedIn ou Portfólio]
