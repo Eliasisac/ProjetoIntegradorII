@@ -15,18 +15,18 @@ Este guia cobre a configuração do ambiente de desenvolvimento e execução do 
   ```
 #### Linux (via NVM recomendado)
 
-```bash
-sudo apt install curl
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-source ~/.bashrc  # ou ~/.zshrc
-nvm install --lts
-nvm use --lts
-```
+  ```bash
+  sudo apt install curl
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  source ~/.bashrc  # ou ~/.zshrc
+  nvm install --lts
+  nvm use --lts
+  ```
 
 #### Windows
-
-Baixe o instalador LTS em: [https://nodejs.org/en/download](https://nodejs.org/en/download)
-O instalador inclui o NPM automaticamente.
+  
+  Baixe o instalador LTS em: [https://nodejs.org/en/download](https://nodejs.org/en/download)
+  O instalador inclui o NPM automaticamente.
 
 ---
 
@@ -40,13 +40,13 @@ O instalador inclui o NPM automaticamente.
 
 #### Linux
 
-```bash
-sudo apt install git
-```
+  ```bash
+  sudo apt install git
+  ```
 
 #### Windows
 
-Baixe o instalador: [https://git-scm.com/download/win](https://git-scm.com/download/win)
+  Baixe o instalador: [https://git-scm.com/download/win](https://git-scm.com/download/win)
 
 * **Configuração inicial:**
 
