@@ -1,7 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const sequelize = require('./config/database');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -9,9 +11,13 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
+// tela de login estática na raiz
 app.get('/', (req, res) => {
-    res.send('API do HelpDeskSphere está online e funcionando!');
+  res.sendFile(path.join(__dirname, '../index.html'));
 });
+
+// Rotas da API prefixadas para evitar conflito
+app.use('/api/auth', authRoutes);
 
 sequelize.sync({ force: false })
     .then(() => {
