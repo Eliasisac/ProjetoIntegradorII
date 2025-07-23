@@ -1,3 +1,4 @@
+
 {
   "name": "server",
   "version": "1.0.0",
@@ -6,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Aline,Antonio,Carol,Elias,Everton,",
   "license": "ISC",
-  "description": "",
+  "description": "  HelpDeskSphere é um sistema de gerenciamento de tickets de suporte técnico, desenvolvido para facilitar a comunicação entre usuários e atendentes, permitindo a criação, atualização e resolução de tickets de forma eficiente.",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
