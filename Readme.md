@@ -10,13 +10,27 @@ Um sistema de gerenciamento de chamados construído com React no frontend e Node
 ## Tecnologias
 - **Frontend:** React, JavaScript, HTML, CSS
 - **Backend:** Node.js, Express.js
-- **Banco de Dados:** PostGress
+- **Banco de Dados:** PostgreSQL
 - **Controle de Versão:** Git, GitHub
 - **Outros:** Deploy em nuvem, Testes, Acessibilidade, Uso de API
 
 ## Como Rodar (Em Construção)
 
 ## Demonstração (Em Breve)
+
+---
+## Divisão de Função
+
+### Backend
+- **Nome 1** — nome1@aluno.univesp.br
+
+### Frontend
+- **Nome 2** — nome2@aluno.univesp.br
+
+### Documentação
+- **Nome 3** — nome3@aluno.univesp.br
+
+---
 
 ## Contato
 [Seu Nome] - [Link do seu LinkedIn ou Portfólio]
