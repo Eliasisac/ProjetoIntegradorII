@@ -1,25 +1,43 @@
+<!-- Declaração do tipo de documento, essencial para que o navegador renderize a página em modo padrão (standard mode). -->
 <!DOCTYPE html>
+<!-- O elemento raiz de uma página HTML. -->
 <html>
+<!-- A tag <head> contém metadados sobre o documento, como o título e a codificação de caracteres. -->
 <head>
+  <!-- Define a codificação de caracteres para o documento como UTF-8, que suporta a maioria dos caracteres e símbolos. -->
   <meta charset="UTF-8">
+  <!-- Define o título da página, que é exibido na aba ou na barra de título do navegador. -->
   <title>Login - HelpDeskSphere</title>
 </head>
+<!-- A tag <body> contém todo o conteúdo visível da página web. -->
 <body>
+  <!-- Título de nível 2 para a seção de login. -->
   <h2>Login</h2>
+  <!-- Formulário para o login do usuário. Os dados serão enviados para a rota "/login" usando o método POST. -->
   <form action="/login" method="POST">
+    <!-- Rótulo (label) para o campo de email. O atributo 'for' o associa ao campo de input com id="email". -->
     <label for="email">Email:</label><br>
+    <!-- Campo de entrada para o email. 'type="email"' oferece validação básica de formato de email. 'required' torna o campo obrigatório. -->
     <input type="email" id="email" name="email" required /><br><br>
 
+    <!-- Rótulo para o campo de senha. -->
     <label for="password">Senha:</label><br>
+    <!-- Campo de entrada para a senha. 'type="password"' mascara os caracteres digitados. 'required' torna o campo obrigatório. -->
     <input type="password" id="password" name="password" required /><br><br>
 
+    <!-- Rótulo para o seletor de tipo de usuário. -->
     <label for="tipo_usuario">Tipo de Usuário:</label><br>
+    <!-- Menu suspenso (dropdown) para selecionar o tipo de usuário. 'required' torna a seleção obrigatória. -->
     <select id="tipo_usuario" name="tipo_usuario" required>
+      <!-- Opção padrão, desabilitada para seleção. -->
       <option value="">Selecione...</option>
+      <!-- Opção para o tipo de usuário "Requerente". -->
       <option value="requerente">Requerente</option>
+      <!-- Opção para o tipo de usuário "Técnico". -->
       <option value="tecnico">Técnico</option>
     </select><br><br>
 
+    <!-- Botão para submeter o formulário. 'type="submit"' é o comportamento padrão para botões dentro de um <form>. -->
     <button type="submit">Entrar</button>
   </form>
 </body>
