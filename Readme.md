@@ -1,4 +1,4 @@
-# HelpDeskSphere
+# SupDeskNIT
 
 Um sistema de gerenciamento de chamados construído com React no frontend e Node.js/Express no backend.
 
