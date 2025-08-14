@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/front/login/style.css">
+
+    <script defer src="script.js"></script>
+    <title>Login NIT RPT - assistência</title>
+
+    <!-- Font Awesome (opcional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!--
+        Observação: para simplificar o envio aqui, coloquei CSS e JS inline neste arquivo.
+        Se preferir, posso extrair para styles.css e script.js separados.
+    -->
+
+</head>
+
+<body>
+
+    <!--
+        Estrutura HTML principal: mantive o layout de dois painéis.
+        Modificações principais:
+        - Adicionei um bloco de seleção "Sou: Cliente / Técnico" dentro do form (antes do email)
+        - Reduzi e centralizei a logo dentro da área azul (toggle-panel)
+        - O JS envia agora o campo `role` junto com email/senha no login
+    -->
+
+    <div class="container" id="container">
+
+        <!-- ====== FORMULÁRIO DE LOGIN (lado esquerdo) ====== -->
+        <div class="form-container sign-in">
+            <form id="login-form">
+                <h1>Entrar</h1>
+                <span>Entre com email e senha</span>
+
+                <!-- Role selection: Cliente ou Técnico -->
+                <fieldset class="role-selection" aria-label="Tipo de usuário">
+                    <!-- usa um input radio escondido seguido do label clicável -->
+                    <input type="radio" id="role-cliente" name="role" value="cliente" checked>
+                    <label for="role-cliente">Cliente</label>
+
+                    <input type="radio" id="role-tecnico" name="role" value="tecnico">
+                    <label for="role-tecnico">Técnico</label>
+                </fieldset>
+
+                <!-- Campos de e-mail / senha -->
+                <input type="email" placeholder="Email" name="email" required>
+                <input type="password" placeholder="Senha" name="senha" required>
+                <a href="#" id="forgot-password-link">Esqueceu sua senha?</a>
+
+                <!-- Botão de submit -->
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+
+        <!-- ====== PAINEL LATERAL (direita, com logo) ====== -->
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-right">
+
+                    <!-- Logo reduzida e centralizada dentro de um wrapper -->
+                    <div class="logo-wrapper">
+                        <!--
+                            Troque o src pela rota correta da sua imagem.
+                            A classe .logo controla o tamanho (width), ajuste conforme necessário.
+                        -->
+                        <img src="../../images/logoPainel.png" alt="Logo Painel" class="logo">
+                    </div>
+
+                    <p>Não possui acesso? Entre em contato com nossa equipe.</p>
+                    <button class="hidden" id="register">Solicitar</button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="email-container" style="display: none;"></div>
+
+
+    <!-- ========== SCRIPTS ========== -->
+
+
+</body>
+
+</html>
