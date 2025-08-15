@@ -4,6 +4,8 @@ require('dotenv').config();
 // Importa a classe Sequelize do pacote sequelize
 const { Sequelize } = require('sequelize');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 // Cria uma nova instância do Sequelize para estabelecer a conexão com o banco de dados.
 const sequelize = new Sequelize(
     process.env.DB_NAME,      // Nome do banco de dados
@@ -18,6 +20,24 @@ const sequelize = new Sequelize(
         // Desativa a exibição dos logs SQL gerados pelo Sequelize no console.
         // Útil para não poluir o console em ambiente de produção ou durante testes.
         logging: false, 
+
+
+        
+        
+//Adicionando apenas para teste no render
+        dialectOptions: isProduction
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false, // necessário para Render
+          }
+        }
+      : {}
+
+
+
+
+        
     }
 );
 
