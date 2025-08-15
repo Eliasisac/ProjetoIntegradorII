@@ -78,8 +78,7 @@
                         // Exemplo: se precisar redirecionar técnicos para um painel diferente, altere aqui
                         // if (role === 'tecnico') window.location.href = '/painel-tecnico';
 
-                        // por enquanto mantive a mesma rota do seu projeto
-                        window.location.href = '/front/selecMaq/selecMaq.html';
+                       //exemplo de direcionamento window.location.href = '/front/painel/painel.html';
                     } else {
                         alert(`${data.message || 'Erro ao fazer Login.'} (Código ${response.status})`);
                     }
