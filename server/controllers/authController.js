@@ -1,30 +1,32 @@
-const Usuario = require('../models/usuario');
-const redirect = require('../routes/redirect'); // módulo que decide a página com base no tipo_usuario
-// const bcrypt = require('bcrypt');        pra quando tiver usando hash no lugar da senha comum
+const Usuario = require('../models/usuario'); // consulta de usuario
+const path = require('path');
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body; // recebe as informações
 
+  // verifica se a autenticação passa
   try {
-    // Busca o usuario pelo email
-    const usuario = await Usuario.findOne({
-      where: { email }
-    });
-    // trativa de erro
-    if (!usuario) {
+    const usuario = await Usuario.findOne({ where: { email } });
+
+    //tratativa de erros
+    if (!usuario || usuario.senha !== password) {
       return res.status(401).send('Credenciais inválidas');
     }
 
-    // MUDAR PRA HASH
-    if (usuario.senha !== password) {
-      return res.status(401).send('Credenciais inválidas');
+    // decide a pagina conforme o tipo de usuario
+    let destino;
+    switch (usuario.tipo_usuario) {
+      case 'admin':
+        destino = path.join(__dirname, '..', 'public', 'admin', 'index.html');
+        break;
+      case 'tecnico':
+        destino = path.join(__dirname, '..', 'public', 'tecnico', 'index.html');
+        break;
+      default:
+        destino = path.join(__dirname, '..', 'public', 'convencional', 'index.html');
     }
 
-    // Recupera o tipo de usuário
-    const tipoUsuario = usuario.tipo_usuario;
-
-    // Redireciona para a pagina correta via modulo redirect
-    redirect.handleRedirection(req, res, tipoUsuario);
+    return res.sendFile(destino);
 
   } catch (err) {
     console.error(err);
