@@ -1,35 +1,39 @@
-const Usuario = require('../models/usuario'); // consulta de usuario
-const path = require('path');
+const jwt = require('jsonwebtoken');
+const Usuario = require('../models/usuario');
 
+// recebe as informações do body
 exports.login = async (req, res) => {
-  const { email, password } = req.body; // recebe as informações
+  const { email, senha } = req.body;
 
-  // verifica se a autenticação passa
+  // procura no banco o user pelo email
   try {
     const usuario = await Usuario.findOne({ where: { email } });
 
-    //tratativa de erros
-    if (!usuario || usuario.senha !== password) {
-      return res.status(401).send('Credenciais inválidas');
+    // trataiva de erro
+    if (!usuario || usuario.senha !== senha) {
+      return res.status(401).json({ message: 'Credenciais inválidas' });
     }
 
-    // decide a pagina conforme o tipo de usuario
-    let destino;
-    switch (usuario.tipo_usuario) {
-      case 'admin':
-        destino = path.join(__dirname, '..', 'public', 'admin', 'index.html');
-        break;
-      case 'tecnico':
-        destino = path.join(__dirname, '..', 'public', 'tecnico', 'index.html');
-        break;
-      default:
-        destino = path.join(__dirname, '..', 'public', 'convencional', 'index.html');
-    }
+    // gera o token jwt
+    const token = jwt.sign(
+      { id: usuario.id, tipo_usuario: usuario.tipo_usuario },
 
-    return res.sendFile(destino);
+      // se não tiver, usa por padrão "segredo123"
+      process.env.JWT_SECRET || 'segredo123',
 
+      // expira em 1h
+      { expiresIn: '1h' }
+    );
+  
+    // devolve pro front em JSON
+    res.json({
+      token,
+      tipo_usuario: usuario.tipo_usuario
+    });
+
+    // trativa de erro
   } catch (err) {
     console.error(err);
-    res.status(500).send('Erro no servidor');
+    res.status(500).json({ message: 'Erro no servidor' });
   }
 };
