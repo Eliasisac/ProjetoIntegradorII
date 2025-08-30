@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo</title>
+</head>
+<body>
+    <!-- primeira linha (titulo) -->
+    <h1>Painel Administrativo</h1>
+
+    <!-- Nav Bar pros botões -->
+    <header>
+        <nav>
+            <ul>
+            <li><a href="#usuarios">Usuários</a></li>
+            <li><a href="#chamados">Chamados</a></li>
+            <li><a href="#metricas">Métricas</a></li>
+            <li><a href="#logs">Logs do Sistema</a></li>
+            <li><a href="#backup">Backup</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Tela central -->
+     <main>
+        <!-- seção de usuarios -->
+        <section id="usuarios">
+            <h2>Gerenciar Usuários</h2>
+            <button id="criarUsuario">Criar Usuário</button>
+            <button id="editarUsuario">Editar Usuário</button>
+            <button id="deletarUsuario">Deletar Usuário</button>
+
+            <div id="listaUsuarios">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Função</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- preenchido via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Logs (Aqui vão ter opções pra coisas diferentes mas pode fazer o css igual pra todos que da certo)-->
+        <section id="logs">
+            <h2>Logs do Sistema</h2>
+
+            <div id="filtros">
+                <button data-categoria="todos">Todos</button>
+                <button data-categoria="autenticacao">Autenticação</button>
+                <button data-categoria="banco">Banco de Dados</button>
+                <button data-categoria="api">API</button>
+                <button data-categoria="sistema">Sistema</button>
+                <button data-categoria="interface">Interface</button>
+                <button data-categoria="notificacao">Notificações</button>
+                <button data-categoria="auditoria">Auditoria</button>
+            </div>
+
+
+            <div class="log-categoria" id="logs-autenticacao">
+                <h3>Autenticação e Autorização</h3>
+                <ul>
+                    <!-- logs carregados via JS -->
+                </ul>
+            </div>
+
+            <div class="log-categoria" id="logs-banco">
+                <h3>Banco de Dados</h3>
+                <ul>
+                    <!-- logs carregados via JS -->
+                </ul>
+            </div>
+
+            <div class="log-categoria" id="logs-api">
+                <h3>API / Integrações</h3>
+                <ul>
+                    <!-- logs carregados via JS -->
+                </ul>
+            </div>
+
+            <div class="log-categoria" id="logs-sistema">
+                <h3>Sistema / Servidor</h3>
+                <ul>
+                    <!-- logs carregados via JS -->
+                </ul>
+            </div>
+
+            <div class="log-categoria" id="logs-frontend">
+                <h3>Front-end / Interface</h3>
+                <ul>
+                    <!-- logs carregados via JS -->
+                </ul>
+            </div>
+
+            <div class="log-categoria" id="logs-email">
+                <h3>Notificações / Emails</h3>
+                <ul>
+                    <!-- logs carregados via JS -->
+                </ul>
+            </div>
+
+            <div class="log-categoria" id="logs-auditoria">
+                <h3>Auditoria / Eventos</h3>
+                <ul>
+                    <!-- logs carregados via JS -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Chamados -->
+        <section id="chamados">
+            <h2>Chamados</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuário</th>
+                        <th>Técnico</th>
+                        <th>Status</th>
+                        <th>Descrição</th>
+                        <th>Anotações</th>
+                        <th>Última atualização</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- preenchido via JS -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Backup -->
+        <section id="backup">
+            <h2>Backup do Banco de Dados</h2>
+            <button id="fazerBackup">Fazer Backup</button>
+            <input type="file" id="uploadBackup">
+            <button id="restaurarBackup">Restaurar Backup</button>
+        </section>
+
+        <!-- Métricas -->
+        <section id="metricas">
+            <h2>Métricas de Atendimento</h2>
+            <label for="tecnicoFiltro">Filtrar por Técnico:</label>
+                <select id="tecnicoFiltro">
+                    <option value="">Todos</option>
+                    <!-- opções adicionadas via JS -->
+                </select>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID Chamado</th>
+                        <th>Técnico</th>
+                        <th>Tempo de Espera</th>
+                        <th>Tempo de Atendimento</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- preenchido via JS -->
+                </tbody>
+            </table>
+        </section>
+  </main>
+
+</body>
+</html>

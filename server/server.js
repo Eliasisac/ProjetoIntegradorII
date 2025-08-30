@@ -11,10 +11,24 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-// tela de login estática na raiz
+// facilita encontrar os arquivos no publico sem precisar mencionar um a um diretamente
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// === LOGIN ====
+// tela de login mostrada antes de qualquer outra
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'front', 'login', 'login.html'));
 });
+
+
+// === Painel ADMIN ===
+// Futuramente aqui vai ter o middleware que verifica JWT e papel admin
+app.get('/admin', (req, res) => {
+  // TODO: verificar se usuário tem tag admin no banco de dados
+  
+  res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
+});
+
 
 // Rotas da API prefixadas para evitar conflito
 app.use('/api/auth', authRoutes);
