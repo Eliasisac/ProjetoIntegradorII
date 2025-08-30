@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('login-form');
 
     loginForm.addEventListener('submit', async function(e) {
-        e.preventDefault(); // previne o envio padrão
+        e.preventDefault();
 
         const email = loginForm.querySelector('input[name="email"]').value.trim();
         const senha = loginForm.querySelector('input[name="senha"]').value;
@@ -20,18 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('tipo_usuario', data.tipo_usuario);
 
-                // redireciona conforme o tipo de usuário
-                switch (data.tipo_usuario) {
-                    case 'admin':
-                        window.location.href = '/admin';
-                        break;
-                    case 'tecnico':
-                        window.location.href = '/tecnico';
-                        break;
-                    case 'convencional':
-                        window.location.href = '/convencional';
-                        break;
-                }
+                // chama função para carregar página protegida
+                loadProtectedPage(data.tipo_usuario, data.token);
             } else {
                 alert(data.message || 'Erro no login');
             }
@@ -41,3 +31,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+async function loadProtectedPage(tipo_usuario, token) {
+    let rota = '';
+    switch (tipo_usuario) {
+        case 'admin': rota = '/admin'; break;
+        case 'tecnico': rota = '/tecnico'; break;
+        case 'convencional': rota = '/convencional'; break;
+    }
+
+    const response = await fetch(rota, {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    if (response.ok) {
+        const html = await response.text();
+        document.open();
+        document.write(html);
+        document.close();
+    } else {
+        alert('Não autorizado');
+    }
+}

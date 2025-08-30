@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/auth');
+const rotas = require('./routes/rotas');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,6 +24,9 @@ app.get('/', (req, res) => {
 
 // Rotas da API prefixadas para evitar conflito
 app.use('/api/auth', authRoutes);
+
+app.use('/', rotas);
+
 
 sequelize.sync({ force: false })
     .then(() => {

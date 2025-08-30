@@ -1,8 +1,17 @@
-const authMiddleware = require('./middlewares/authMiddleware');
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('./authMiddleware');
 const path = require('path');
 
 // Admin
-app.get('/admin', authMiddleware, (req, res) => {
+router.get('/admin', authMiddleware, (req, res) => {
+  console.log('Usuário autenticado:', req.user);
   if (req.user.tipo_usuario !== 'admin') return res.status(403).send('Acesso negado');
-  res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'public', 'front', 'admin', 'index.html'));
 });
+
+
+
+
+
+module.exports = router;
