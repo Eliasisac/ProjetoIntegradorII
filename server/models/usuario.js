@@ -8,6 +8,7 @@ const sequelize = require('../config/database');
 // Importa o modelo School para definir a relação
 //const School é o modelo que representa a entidade School no banco de dados
 // require('./School') importa o modelo School do arquivo School.js
+
 const School = require('./School');
 // Define o modelo Usuario
 const Usuario = sequelize.define('Usuario', {
@@ -16,7 +17,6 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.UUID,// Define o tipo como UUID
     defaultValue: DataTypes.UUIDV4,// Gera um UUID automaticamente
     primaryKey: true,// Define como chave primária
-    autoIncrement: true,// Define como auto-incremento
     allowNull: false,// Torna o campo obrigatório
   },
   nome: {
@@ -32,9 +32,10 @@ const Usuario = sequelize.define('Usuario', {
   senha: {
     type: DataTypes.STRING,// Define o tipo como STRING
     allowNull: false,// Torna o campo obrigatório
+  },
   role: {// Define o campo role 
   // role é o papel ou função do usuário no sistema
-    type: DataTypes.ENUM('admin','client','tecnician'),// Define o tipo como ENUM
+    type: DataTypes.ENUM('admin','client','technician'),// Define o tipo como ENUM
     allowNull: false,// Torna o campo obrigatório
     defaultValue: 'client'//  Define o valor padrão como 'client'
   },
@@ -51,13 +52,15 @@ const Usuario = sequelize.define('Usuario', {
         key: 'id', // Referencia a chave primária do modelo School
       }
     },
-  }
-})
+  },
+{
+  tableName: 'Usuario', // Define o nome da tabela como 'Usuarios'
+});
+
 
 // Define a relação entre Usuario e School
-User.belongsTo(School, { foreignKey: 'schoolId' });// Um usuário pertence a uma escola(N/1)
-School.hasMany(User, { foreignKey: 'schoolId' });// Uma escola tem muitos usuários(1/N)
+
 
 // Exporta o modelo Usuario para uso em outras partes da aplicação
 
-module.exports = Usuario
+module.exports = Usuario;
