@@ -43,9 +43,9 @@ const app = express();
 // PORT é a porta na qual o servidor irá escutar as requisições
 // process.env.PORT obtém a porta do ambiente, ou usa 5000 como padrão
 const PORT = process.env.PORT || 5000;
-//const associations é a importação do modelo association criado   
-// 
 
+//const associations é a importação do modelo association criado   
+const associations = require('./models/associations')
 
 //app.use é usado para montar o middleware no aplicativo Express
 // express.json() é um middleware que analisa requisições com payload JSON
@@ -74,7 +74,7 @@ app.use('/', rotas);
 
 
 
-sequelize.sync({ force: false })
+sequelize.sync({ force: false})
 // force: false (ou omitir a opção 'force') garante que as tabelas não sejam recriadas a cada reinício do servidor, preservando os dados.
 // force: false garante que as tabelas não sejam recriadas a cada reinício do servidor
     // .then() é chamado quando a sincronização é bem-sucedida
