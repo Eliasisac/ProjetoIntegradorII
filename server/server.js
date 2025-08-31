@@ -43,6 +43,9 @@ const app = express();
 // PORT é a porta na qual o servidor irá escutar as requisições
 // process.env.PORT obtém a porta do ambiente, ou usa 5000 como padrão
 const PORT = process.env.PORT || 5000;
+//const associations é a importação do modelo association criado   
+// 
+
 
 //app.use é usado para montar o middleware no aplicativo Express
 // express.json() é um middleware que analisa requisições com payload JSON
@@ -72,9 +75,8 @@ app.use('/', rotas);
 
 
 sequelize.sync({ force: false })
-//sequelize.sync() sincroniza todos os modelos definidos com o banco de dados
+// force: false (ou omitir a opção 'force') garante que as tabelas não sejam recriadas a cada reinício do servidor, preservando os dados.
 // force: false garante que as tabelas não sejam recriadas a cada reinício do servidor
-
     // .then() é chamado quando a sincronização é bem-sucedida
     .then(() => {
         console.log('Banco de dados PostgreSQL conectado e sincronizado com Sequelize.');
@@ -88,3 +90,6 @@ sequelize.sync({ force: false })
         console.error('Erro ao conectar ou sincronizar o banco de dados:', err);
         process.exit(1);
     });
+
+
+  

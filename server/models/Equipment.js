@@ -55,3 +55,5 @@ const Equipment = sequelize.define('Equipment', { // Define o modelo Equipment
     tableName: 'Equipments', // Define o nome da tabela como 'Equipments'
 });
 // Define a relação entre Equipment e School
+
+module.exports = Equipment

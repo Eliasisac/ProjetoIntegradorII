@@ -1,98 +1,90 @@
-// Importa os tipos de dados do Sequelize e a instância de conexão
-//Datatypes é  usado para definir os tipos de dados dos campos do modelo
+// Importa os tipos de dados necessários do Sequelize.
 const { DataTypes } = require('sequelize');
-//sequelize é a instância de conexão com o banco de dados
+
+// Importa a instância do Sequelize para conexão com o banco de dados.
 const sequelize = require('../config/database');
-//importa o modelo Equipment para definir a relação
-//const Equipment é o modelo que representa a entidade Equipment no banco de dados
-// require('./Equipment') importa o modelo Equipment do arquivo Equipment.js    
-const Equipment = require('./Equipment');
-const Usuario = require('./Usuario');
-// Importa o modelo Equipment para definir a relação
-//const Equipment é o modelo que representa a entidade Equipment no banco de dados
-// require('./Equipment') importa o modelo Equipment do arquivo Equipment.js
-const School = require('./School');
-// Importa o modelo School para definir a relação
-//const School é o modelo que representa a entidade School no banco de dados
-// require('./School') importa o modelo School do arquivo School.js
 
-// Define o modelo Ticket
-const Ticket = sequelize.define('Ticket', {// Define o modelo Ticket
-    id: {// Define o campo id
-        type: DataTypes.UUID,// Define o tipo como UUID
-        defaultValue: DataTypes.UUIDV4,// Gera um UUID automaticamente
-        primaryKey: true,// Define como chave primária
-        allowNull: false,// Torna o campo obrigatório
+/**
+ * @model Ticket
+ * @description Define o modelo para a tabela 'tickets', que armazena informações sobre os chamados de suporte.
+ */
+const Ticket = sequelize.define('Ticket', {
+    /**
+     * @property {UUID} id - Identificador único do ticket.
+     * @description Gerado automaticamente como um UUIDV4. É a chave primária da tabela.
+     */
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
     },
-    titulo: {       // Define o campo titulo
-        type: DataTypes.STRING,// Define o tipo como STRING
-        allowNull: false,// Torna o campo obrigatório
-
-    },  
-    descricao: {    // Define o campo descricao
-        type: DataTypes.TEXT,// Define o tipo como TEXT
-        allowNull: false,// Torna o campo obrigatório
+    /**
+     * @property {string} titulo - Título breve do ticket.
+     */
+    titulo: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    status: {      // Define o campo status
-        type: DataTypes.ENUM('aberto', 'em andamento', 'resolvido','fechado'),// Define o tipo como ENUM, Enum é um tipo de dado que permite apenas valores pré-definidos   
-        defaultValue: 'aberto',// Define o valor padrão como 'aberto'
-        allowNull: false,// Torna o campo obrigatório
+    /**
+     * @property {string} descricao - Descrição detalhada do problema ou solicitação.
+     */
+    descricao: {
+        type: DataTypes.TEXT,
+        allowNull: false,
     },
-    prioridade: {  // Define o campo prioridade
-        type: DataTypes.ENUM('baixa', 'media', 'alta'),// Define o tipo como ENUM
-        defaultValue: 'media',// Define o valor padrão como 'media'
-        allowNull: false,// Torna o campo obrigatório
+    /**
+     * @property {ENUM} status - Status atual do ticket.
+     * @description Pode ser 'aberto', 'em andamento', 'resolvido' ou 'fechado'. O valor padrão é 'aberto'.
+     */
+    status: {
+        type: DataTypes.ENUM('aberto', 'em andamento', 'resolvido', 'fechado'),
+        defaultValue: 'aberto',
+        allowNull: false,
     },
-
-    //chave estrangeira para o usuário que criou o ticket
+    /**
+     * @property {ENUM} prioridade - Nível de urgência do ticket.
+     * @description Pode ser 'baixa', 'media' ou 'alta'. O valor padrão é 'media'.
+     */
+    prioridade: {
+        type: DataTypes.ENUM('baixa', 'media', 'alta'),
+        defaultValue: 'media',
+        allowNull: false,
+    },
+    /**
+     * @property {UUID} usuarioId - Chave estrangeira que referencia o ID do usuário que abriu o ticket.
+     */
     usuarioId: {
-        type: DataTypes.UUID, // Define o tipo como UUID  UUID é um identificador único universal
-        allowNull: false, // Torna o campo obrigatório
-        references: {
-            model: 'Usuarios', // Referencia o modelo Usuario
-            key: 'id', // Referencia a chave primária do modelo Usuario
-        }
+        type: DataTypes.UUID,
+        allowNull: false,
     },
-    //chave estrangeira para o técnico atribuído ao ticket 
+    /**
+     * @property {UUID} tecnicoId - Chave estrangeira que referencia o ID do técnico atribuído ao ticket.
+     * @description Pode ser nulo se nenhum técnico foi atribuído ainda.
+     */
     tecnicoId: {
-        type: DataTypes.UUID, // Define o tipo como UUID  UUID é um identificador único universal
-        allowNull: true, // Torna o campo opcional
-        references: {
-            model: 'Usuarios', // Referencia o modelo Usuario
-            key: 'id', // Referencia a chave primária do modelo Usuario
-        }
+        type: DataTypes.UUID,
+        allowNull: true,
     },
-    //Chave estrangeira para a escola associada ao ticket
+    /**
+     * @property {UUID} schoolId - Chave estrangeira que referencia o ID da escola relacionada ao ticket.
+     */
     schoolId: {
-        type: DataTypes.UUID, // Define o tipo como UUID  UUID é um identificador único universal
-        allowNull: false, // Torna o campo obrigatório
-        references: {
-            model: 'Schools', // Referencia o modelo School
-            key: 'id', // Referencia a chave primária do modelo School
-        }
+        type: DataTypes.UUID,
+        allowNull: false,
     },
-    //chave estrangeira que referencia o equipamento associado ao ticket
+    /**
+     * @property {UUID} equipmentId - Chave estrangeira que referencia o ID do equipamento relacionado ao ticket.
+     * @description Pode ser nulo se o ticket não estiver associado a um equipamento específico.
+     */
     equipmentId: {
-        type: DataTypes.UUID, // Define o tipo como UUID  UUID é um identificador único universal    
-        allowNull: true, // Torna o campo opcional
-        references: {
-            model: 'Equipments', // Referencia o modelo Equipment
-            key: 'id', // Referencia a chave primária do modelo Equipment
-        }
+        type: DataTypes.UUID,
+        allowNull: true,
     },
-}, {    
+}, {
+    // Opções do modelo
+    tableName: 'tickets', // Define explicitamente o nome da tabela no banco de dados.
+});
 
-    //Opções adicionais do modelo
-    tableName: 'Tickets', // Define o nome da tabela como 'Tickets
-    //creatdAT e updateAT são gerenciados automaticamente pelo Sequelize
-})
-
-    //Define as associações do modelo Ticket
-
-
-
-//Exporta o modelo Ticket para uso em outras partes da aplicação
+// Exporta o modelo Ticket para ser utilizado em outras partes da aplicação.
 module.exports = Ticket;
-// Ticket é o modelo que representa a entidade Ticket no banco de dados
-// module.exports = Ticket exporta o modelo Ticket para uso em outras partes da aplicação
-// require('./Ticket') importa o modelo Ticket do arquivo Ticket.js 
