@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
+const bcrypt = require('bcrypt');// para converter hash da senha
 
 // recebe as informações do body
 exports.login = async (req, res) => {
@@ -10,13 +11,14 @@ exports.login = async (req, res) => {
     const usuario = await Usuario.findOne({ where: { email } });
 
     // trataiva de erro
-    if (!usuario || usuario.senha !== senha) {
+    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    if (!senhaValida) {
       return res.status(401).json({ message: 'Credenciais inválidas' });
     }
 
     // gera o token jwt
     const token = jwt.sign(
-      { id: usuario.id, tipo_usuario: usuario.tipo_usuario },
+      { id: usuario.id, tipo_usuario: usuario.role },
 
       // se não tiver, usa por padrão "segredo123"
       process.env.JWT_SECRET || 'segredo123',
@@ -28,7 +30,7 @@ exports.login = async (req, res) => {
     // devolve pro front em JSON
     res.json({
       token,
-      tipo_usuario: usuario.tipo_usuario
+      tipo_usuario: usuario.role
     });
 
     // trativa de erro

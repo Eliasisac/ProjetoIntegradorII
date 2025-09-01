@@ -1,3 +1,4 @@
+const criarAdminSeNaoExistir = require('./seeds/criarAdmin.js'); // Utilizado para gerar um admin inicialmente para facilitar nosso acesso 
 
 //dotenv é uma biblioteca que carrega variáveis de ambiente de um arquivo .env para process.env
 //require('dotenv').config() carrega as variáveis de ambiente do arquivo .env
@@ -92,4 +93,4 @@ sequelize.sync({ force: false})
     });
 
 
-  
+    criarAdminSeNaoExistir(); //gera o administrador padrão

@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('login-form');
 
-    loginForm.addEventListener('submit', async function(e) {
+    loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
         const email = loginForm.querySelector('input[name="email"]').value.trim();
         const senha = loginForm.querySelector('input[name="senha"]').value;
-
+        
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -17,13 +17,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
 
             if (response.ok && data.token) {
+                // Salva token e tipo de usuário corretamente
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('tipo_usuario', data.tipo_usuario);
-
-                // chama função para carregar página protegida
-                loadProtectedPage(data.tipo_usuario, data.token);
-            } else {
-                alert(data.message || 'Erro no login');
+                console.log(data);
+                // Redireciona para a página protegida
+                loadProtectedPage(data.tipo_usuario);
+            }
+             else {
+                alert(data.message || 'Credenciais inválidas');
             }
         } catch (err) {
             console.error('Erro na requisição:', err);
@@ -32,24 +34,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-async function loadProtectedPage(tipo_usuario, token) {
+async function loadProtectedPage(tipo_usuario) {
     let rota = '';
     switch (tipo_usuario) {
         case 'admin': rota = '/admin'; break;
-        case 'tecnico': rota = '/tecnico'; break;
-        case 'convencional': rota = '/convencional'; break;
+        case 'technician': rota = '/tecnico'; break;
+        case 'client': rota = '/convencional'; break;
+        default:
+            alert('Tipo de usuário inválido');
+            return;
     }
 
-    const response = await fetch(rota, {
-        headers: { 'Authorization': 'Bearer ' + token }
-    });
+    try {
+        const response = await fetch(rota, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        });
 
-    if (response.ok) {
+        if (!response.ok) throw new Error('Não autorizado');
+
         const html = await response.text();
         document.open();
         document.write(html);
         document.close();
-    } else {
-        alert('Não autorizado');
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
     }
 }
