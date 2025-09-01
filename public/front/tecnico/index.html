@@ -1,11 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Técnico</title>
 </head>
 <body>
-    <h1>TESTE</h1>
+  <h1>Painel Técnico</h1>
+
+  <div>
+    <label for="chamado">Novo Chamado:</label>
+    <input type="text" id="chamado" placeholder="Descrição do chamado">
+    <button id="btnCriarChamado">Criar Chamado</button>
+  </div>
+
+  <h2>Chamados Abertos</h2>
+  <ul id="listaChamados"></ul>
+
+  <script src="/front/tecnico/tecnico.js"></script>
 </body>
 </html>
