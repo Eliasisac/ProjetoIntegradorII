@@ -19,6 +19,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const Usuario = require('../models/Usuario'); 
 const Escola = require('../models/School'); // seu model de escolas
+const Ticket = require('../models/Ticket');
 
 
 // ==================== ADMIN PAINEL ====================
@@ -181,7 +182,7 @@ router.get('/tecnico', authMiddleware, (req, res) => {
   // Se não for, retorna 403 (Forbidden) com a mensagem 'Acesso negado'
   
   console.log('Usuário autenticado:', req.user);
-  if (req.user.tipo_usuario !== 'tecnico') return res.status(403).send('Acesso negado');
+  if (req.user.tipo_usuario !== 'technician') return res.status(403).send('Acesso negado');
    // Verifica se o usuário autenticado é do tipo 'tecnico'
   // Se for, envia o arquivo index.html da pasta tecnico como resposta
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'front', 'tecnico', 'index.html'));
@@ -191,6 +192,102 @@ router.get('/tecnico', authMiddleware, (req, res) => {
   // '..', '..', 'public', 'front', 'tecnico', 'index.html' navega até o arquivo index.html
   
 });
+
+// GET /tickets/abertos
+router.get('/tickets/abertos', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.tipo_usuario !== 'technician') {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+
+    const tickets = await Ticket.findAll({
+      where: { tecnicoId: null, status: 'aberto' }
+    });
+
+    res.json(tickets);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao listar tickets abertos' });
+  }
+});
+
+
+// PUT /tickets/:id/atribuir
+router.put('/tickets/:id/atribuir', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.tipo_usuario !== 'technician') {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+
+    const { id } = req.params;
+    const ticket = await Ticket.findByPk(id);
+
+    if (!ticket) return res.status(404).json({ error: 'Ticket não encontrado' });
+    if (ticket.tecnicoId) return res.status(400).json({ error: 'Ticket já foi atribuído' });
+
+    ticket.tecnicoId = req.user.id;
+    ticket.status = 'em andamento';
+    await ticket.save();
+
+    res.json({ message: 'Ticket atribuído com sucesso', ticket });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao atribuir ticket' });
+  }
+});
+
+// GET /tickets/me
+router.get('/tickets/me', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.tipo_usuario !== 'technician') {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+
+    const tickets = await Ticket.findAll({
+      where: { tecnicoId: req.user.id }
+    });
+
+    res.json(tickets);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar seus tickets' });
+  }
+});
+
+
+// PUT /tickets/:id/status
+router.put('/tickets/:id/status', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.tipo_usuario !== 'technician') {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['aberto', 'em andamento', 'resolvido', 'fechado'].includes(status)) {
+      return res.status(400).json({ error: 'Status inválido' });
+    }
+
+    const ticket = await Ticket.findByPk(id);
+    if (!ticket) return res.status(404).json({ error: 'Ticket não encontrado' });
+
+    if (ticket.tecnicoId !== req.user.id) {
+      return res.status(403).json({ error: 'Você não é responsável por este ticket' });
+    }
+
+    ticket.status = status;
+    await ticket.save();
+
+    res.json({ message: 'Status atualizado com sucesso', ticket });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao atualizar status do ticket' });
+  }
+});
+
+
+
 
 // ==================== Escola ====================
 //Criar nova escola
