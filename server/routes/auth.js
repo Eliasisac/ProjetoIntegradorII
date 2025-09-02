@@ -9,5 +9,6 @@ const authController = require('../controllers/authController');
 // Quando uma requisição POST é feita para '/login', a função 'login' do 'authController' é executada.
 router.post('/login', authController.login);
 
+
 // Exporta o objeto 'router' com todas as suas rotas configuradas para ser usado no arquivo principal do servidor (app.js ou server.js).
 module.exports = router;
