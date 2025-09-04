@@ -10,5 +10,11 @@ const authController = require('../controllers/authController');
 router.post('/login', authController.login);
 
 
+
+// Define uma rota para o método HTTP POST no caminho '/register'.
+// Quando uma requisição POST é feita para '/register', a função 'register' do 'authController' é executada.
+router.post('/register', authController.register);
+
+
 // Exporta o objeto 'router' com todas as suas rotas configuradas para ser usado no arquivo principal do servidor (app.js ou server.js).
 module.exports = router;

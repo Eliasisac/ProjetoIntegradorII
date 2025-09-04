@@ -41,7 +41,7 @@ router.get('/admin', authMiddleware, (req, res) => {
   //__dirname é a variável que contém o diretório atual do arquivo rotas.js
   // '..', '..', 'public', 'front', 'admin', 'index.html' navega até o arquivo index.html
 });
-
+  
 
 // ==================== CRUD DE USUÁRIOS ====================
 // Listar usuários (sem senha)
