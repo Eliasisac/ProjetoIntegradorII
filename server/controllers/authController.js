@@ -40,7 +40,7 @@ exports.register = async (req, res) => {
         });
 
         // Gera um token JWT para o novo usuário
-        const token = jwt.sign({ id: user.id, role: newUser.role, schoolId: newUser.schoolId  },
+        const token = jwt.sign({ id: newUser.id, role: newUser.role, schoolId: newUser.schoolId  },
         process.env.JWT_SECRET || 'segredo123',
             { expiresIn: '1h' }
         );      

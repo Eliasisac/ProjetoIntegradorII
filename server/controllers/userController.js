@@ -2,6 +2,22 @@
 const Usuario = require('../models/Usuario');
 const bcrypt = require('bcryptjs');
 
+// Função para listar todos os usuários (apenas para admins)
+exports.getAllUsers = async (req, res) => {
+        try {  
+            //Busca todos os usuários no banco de dados, excluindo a senha
+            const users = await Usuario.findAll({
+             //const users é uma variável que armazena a lista de usuários retornada pela consulta ao banco de dados
+             //await é usado para esperar a resolução da promessa retornada por Usuario.findAll
+            attributes: { exclude: ['senha'] } // Exclui o campo de senha dos resultados
+         });
+        res.status(200).json(users); // Retorna a lista de usuários
+    } catch (error) {
+         console.error('Erro ao buscar usuários:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
+};
+
 // Função para atualizar um usuário existente
 exports.updateUser = async (req, res) => {
     try {
