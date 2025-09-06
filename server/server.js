@@ -15,10 +15,12 @@ const authRoutes = require('./routes/auth');// Rotas de autenticação
 // Rotas de autenticação (login, registro, etc.)
 const rotas = require('./routes/rotas'); // Outras rotas da aplicação
 const ticketRoutes = require('./routes/ticketRoutes');// Rotas relacionadas a chamados (tickets)
+const userRoutes = require('./routes/userRoutes');// Rotas relacionadas a usuários (atualização de perfil, etc.)
+
 
 // ==== Inicialização do Servidor Express ====
-const app = express();
-const PORT = process.env.PORT || 5000;
+    const app = express();
+    const PORT = process.env.PORT || 5000;
 
 
 // ==== Middlewares ====
@@ -42,10 +44,15 @@ app.use('/api/auth', authRoutes);
 
 // Rotas de chamados (tickets)
 
-app.use('/api/tickets', ticketRoutes); 
+app.use('/api/tickets', ticketRoutes);
+
+// Rotas de usuários
+app.use('/api/users', userRoutes); 
 
 // Outras rotas da aplicação
 app.use('/', rotas);
+
+
 
 // ==== Sincronização do Banco de Dados e Início do Servidor ====
 sequelize.sync({ force: false })

@@ -8,7 +8,7 @@ const router = express.Router();
 //router é o objeto que define as rotas da aplicação
 //express.Router() cria uma nova instância de roteador
 
-const authMiddleware = require('./authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 //authMiddleware é o middleware de autenticação que verifica o token JWT
 //require('./authMiddleware') importa o middleware de autenticação do arquivo authMiddleware.js
 
