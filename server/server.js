@@ -1,13 +1,20 @@
 // ==== Importações ====
-require('dotenv').config(); 
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const sequelize = require('./config/database');
-const associations = require('./models/associations');
-const criarAdminSeNaoExistir = require('./seeds/criarAdmin.js'); 
-const authRoutes = require('./routes/auth');
-const rotas = require('./routes/rotas');
+require('dotenv').config(); // Carrega variáveis de ambiente do arquivo .env
+const express = require('express');//importa o framework Express para criar o servidor web 
+//express é um framework web para Node.js que facilita a criação de servidores e APIs
+const cors = require('cors'); //cors é um middleware para habilitar CORS (Cross-Origin Resource Sharing) em aplicações Express
+// CORS é um mecanismo que permite que recursos restritos em uma página web sejam solicitados a partir de outro domínio fora do domínio do qual o recurso foi servido
+const path = require('path');//path é um módulo nativo do Node.js que fornece utilitários para trabalhar com caminhos de arquivos e diretórios
+const sequelize = require('./config/database');// Importa a instância do Sequelize configurada para conectar ao banco de dados
+// Importa as associações entre os modelos (se houver)
+const associations = require('./models/associations');// Importa as associações entre os modelos (se houver)
+// Importa a função para criar um usuário admin se não existir
+const criarAdminSeNaoExistir = require('./seeds/criarAdmin.js');  // Função para criar um usuário admin se não existir
+// Importa as rotas da aplicação
+const authRoutes = require('./routes/auth');// Rotas de autenticação 
+// Rotas de autenticação (login, registro, etc.)
+const rotas = require('./routes/rotas'); // Outras rotas da aplicação
+const ticketRoutes = require('./routes/ticketRoutes');// Rotas relacionadas a chamados (tickets)
 
 // ==== Inicialização do Servidor Express ====
 const app = express();
@@ -15,6 +22,7 @@ const PORT = process.env.PORT || 5000;
 
 
 // ==== Middlewares ====
+//middleware é uma função que tem acesso ao objeto de solicitação (req), ao objeto de resposta (res) e à próxima função de middleware no ciclo de solicitação-resposta da aplicação
 // Esses middlewares devem ser os primeiros a serem usados
 // Eles processam as requisições antes que cheguem às rotas
 app.use(express.json()); 
@@ -31,6 +39,10 @@ app.get('/', (req, res) => {
 
 // Rotas de autenticação
 app.use('/api/auth', authRoutes);
+
+// Rotas de chamados (tickets)
+
+app.use('/api/tickets', ticketRoutes); 
 
 // Outras rotas da aplicação
 app.use('/', rotas);

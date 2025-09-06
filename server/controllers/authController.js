@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Adicione esta chave secreta para assinar os tokens (crie uma complexa e armazene no .env futuramente)
-const JWT_SECRET = 'sua_chave_secreta_aqui';
+
 
 // Lógica de registro de usuário
 //exports.register = async (req, res) é a função que lida com o registro de novos usuários
@@ -40,9 +40,10 @@ exports.register = async (req, res) => {
         });
 
         // Gera um token JWT para o novo usuário
-        const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, {
-            expiresIn: '1h', // Token expira em 1 hora
-        });
+        const token = jwt.sign({ id: user.id, role: newUser.role, schoolId: newUser.schoolId  },
+        process.env.JWT_SECRET || 'segredo123',
+            { expiresIn: '1h' }
+        );      
 
         // Retorna os detalhes do usuário e o token
         // 201 indica que o recurso foi criado com sucesso
@@ -88,11 +89,14 @@ exports.login = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: 'Email ou senha inválidos.' });
         }
+        
+        const token = jwt.sign(
+            { id: user.id, role: user.role, schoolId: user.schoolId },
+                'segredo123', // <-- Chave secreta deve ser esta
+                { expiresIn: '1h' }
+            );
 
-        // Gera um token JWT para o usuário
-        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {
-            expiresIn: '1h', // Token expira em 1 hora
-        });
+        
 
         res.status(200).json({
             message: 'Login realizado com sucesso.',
