@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (response.ok && data.token) {
                 // Salva token e tipo de usuário corretamente
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('tipo_usuario', data.tipo_usuario);
+                localStorage.setItem('role', data.user.role);
                 console.log(data);
                 // Redireciona para a página protegida
-                loadProtectedPage(data.tipo_usuario);
+                loadProtectedPage(data.user.role);
             }
              else {
                 alert(data.message || 'Credenciais inválidas');
@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-async function loadProtectedPage(tipo_usuario) {
+async function loadProtectedPage(role) {
     let rota = '';
-    switch (tipo_usuario) {
+    switch (role) {
         case 'admin': rota = '/admin'; break;
         case 'technician': rota = '/tecnico'; break;
         case 'client': rota = '/convencional'; break;
@@ -63,3 +63,4 @@ async function loadProtectedPage(tipo_usuario) {
         alert(err.message);
     }
 }
+    

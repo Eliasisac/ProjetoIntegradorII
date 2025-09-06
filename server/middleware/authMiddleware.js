@@ -52,7 +52,7 @@ module.exports = function(req, res, next) {
         // Verificação de role (opcional)
         // Define os roles permitidos para acessar a rota
 
-        const allowedRoles = ['client', 'tecnico', 'admin'];// Define os roles permitidos para acessar a rota
+        const allowedRoles = ['client', 'technician', 'admin'];// Define os roles permitidos para acessar a rota
         // Verifica se o role do usuário está na lista de roles permitidos
         if (!allowedRoles.includes(req.user.role)) {// Verifica se o role do usuário está na lista de roles permitidos
             return res.sendStatus(403); // Role não permitida

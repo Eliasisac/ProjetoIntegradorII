@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ----------------- Carregar chamados abertos -----------------
     async function carregarChamados() {
         try {
-            const res = await fetch("http://127.0.0.1:3000/tickets/abertos", {
+            const res = await fetch("http://127.0.0.1:5000/tickets/abertos", {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
 
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ----------------- Carregar chamados do técnico -----------------
     async function carregarMeusChamados() {
         try {
-            const res = await fetch("http://127.0.0.1:3000/tickets/me", {
+            const res = await fetch("http://127.0.0.1:5000/tickets/me", {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
 
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ----------------- Aceitar chamado -----------------
     async function aceitarChamado(id) {
         try {
-            const res = await fetch(`http://127.0.0.1:3000/tickets/${id}/atribuir`, {
+            const res = await fetch(`http://127.0.0.1:5000/tickets/${id}/atribuir`, {
                 method: "PUT",
                 headers: { 'Authorization': 'Bearer ' + token }
             });
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ----------------- Atualizar status do chamado -----------------
     async function atualizarStatus(id, status) {
         try {
-            const res = await fetch(`http://127.0.0.1:3000/tickets/${id}/status`, {
+            const res = await fetch(`http://127.0.0.1:5000/tickets/${id}/status`, {
                 method: "PUT",
                 headers: {
                     'Authorization': 'Bearer ' + token,

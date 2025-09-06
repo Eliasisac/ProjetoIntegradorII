@@ -31,7 +31,7 @@ router.get('/admin', authMiddleware, (req, res) => {
   //res é o objeto de resposta que é usado para enviar a resposta HTTP
   console.log('Usuário autenticado:', req.user);
   // Imprime no console as informações do usuário autenticado
-  if (req.user.tipo_usuario !== 'admin') return res.status(403).send('Acesso negado');
+  if (req.user.role !== 'admin') return res.status(403).send('Acesso negado');
   // Verifica se o tipo de usuário é 'admin'
   // Se não for, retorna 403 (Forbidden) com a mensagem 'Acesso negado'
   // Se for, envia o arquivo index.html da pasta admin como resposta
@@ -47,7 +47,7 @@ router.get('/admin', authMiddleware, (req, res) => {
 // Listar usuários (sem senha)
 router.get('/users', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
     const usuarios = await Usuario.findAll({ attributes: { exclude: ['senha'] } });
     res.json(usuarios);
   } catch (err) {
@@ -60,7 +60,7 @@ router.get('/users', authMiddleware, async (req, res) => {
 
 router.post('/users', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'admin')
+    if (req.user.role !== 'admin')
       return res.status(403).json({ error: 'Acesso negado' });
 
     const { nome, email, senha, role, schoolId } = req.body;
@@ -113,7 +113,7 @@ router.post('/users', authMiddleware, async (req, res) => {
 // Editar usuário (nome/email/tipo)
 router.put('/users/:id', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
 
     const { id } = req.params;
     const { nome, email, role } = req.body;
@@ -137,7 +137,7 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
 // Atualizar senha
 router.patch('/users/:id/password', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
 
     const { id } = req.params;
     const { senha } = req.body;
@@ -159,7 +159,7 @@ router.patch('/users/:id/password', authMiddleware, async (req, res) => {
 // Deletar usuário
 router.delete('/users/:id', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
 
     const { id } = req.params;
     const user = await Usuario.findByPk(id);
@@ -182,21 +182,17 @@ router.get('/tecnico', authMiddleware, (req, res) => {
   // Se não for, retorna 403 (Forbidden) com a mensagem 'Acesso negado'
   
   console.log('Usuário autenticado:', req.user);
-  if (req.user.tipo_usuario !== 'technician') return res.status(403).send('Acesso negado');
+  if (req.user.role !== 'technician') return res.status(403).send('Acesso negado');
    // Verifica se o usuário autenticado é do tipo 'tecnico'
   // Se for, envia o arquivo index.html da pasta tecnico como resposta
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'front', 'tecnico', 'index.html'));
-  //res.sendFile envia um arquivo como resposta
-  //path.join(...) cria o caminho absoluto para o arquivo index.html da pasta tecnico
-  //__dirname é a variável que contém o diretório atual do arquivo rotas.js
-  // '..', '..', 'public', 'front', 'tecnico', 'index.html' navega até o arquivo index.html
   
 });
 
 // GET /tickets/abertos
 router.get('/tickets/abertos', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'technician') {
+    if (req.user.role !== 'technician') {
       return res.status(403).json({ error: 'Acesso negado' });
     }
 
@@ -215,7 +211,7 @@ router.get('/tickets/abertos', authMiddleware, async (req, res) => {
 // PUT /tickets/:id/atribuir
 router.put('/tickets/:id/atribuir', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'technician') {
+    if (req.user.role !== 'technician') {
       return res.status(403).json({ error: 'Acesso negado' });
     }
 
@@ -239,7 +235,7 @@ router.put('/tickets/:id/atribuir', authMiddleware, async (req, res) => {
 // GET /tickets/me
 router.get('/tickets/me', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'technician') {
+    if (req.user.role !== 'technician') {
       return res.status(403).json({ error: 'Acesso negado' });
     }
 
@@ -258,7 +254,7 @@ router.get('/tickets/me', authMiddleware, async (req, res) => {
 // PUT /tickets/:id/status
 router.put('/tickets/:id/status', authMiddleware, async (req, res) => {
   try {
-    if (req.user.tipo_usuario !== 'technician') {
+    if (req.user.role !== 'technician') {
       return res.status(403).json({ error: 'Acesso negado' });
     }
 
