@@ -10,5 +10,12 @@ router.post('/', authMiddleware, adminMiddleware, equipmentController.createEqui
 // Nova rota para listar todos os equipamentos (protegida com autenticação e permissão de admin)
 router.get('/', authMiddleware, adminMiddleware, equipmentController.getAllEquipments);
 
+// Atualizar um equipamento (apenas admin)
+router.put('/:id', authMiddleware, adminMiddleware, equipmentController.updateEquipment);
+
+// Deletar um equipamento (apenas admin)
+router.delete('/:id', authMiddleware, adminMiddleware, equipmentController.deleteEquipment);
+
+
 
 module.exports = router;

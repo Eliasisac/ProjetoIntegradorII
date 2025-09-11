@@ -218,3 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+// ======== LOGOUT =========
+const btnLogout = document.getElementById('logoutBtn');
+btnLogout.addEventListener('click', () => {
+    localStorage.removeItem('token'); // apaga o token JWT
+    window.location.href = '/';  // redireciona pra tela de login
+});
