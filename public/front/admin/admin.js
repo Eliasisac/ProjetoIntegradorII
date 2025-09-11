@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${u.id}</td>
                     <td>${u.nome}</td>
                     <td>${u.email}</td>
-                    <td>${u.tipo_usuario}</td>
+                    <td>${u.role}</td>
                     <td>
                         <button class="editar" data-id="${u.id}">Editar</button>
                         <button class="deletar" data-id="${u.id}">Excluir</button>
