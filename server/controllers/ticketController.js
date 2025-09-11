@@ -134,3 +134,33 @@ exports.getTicketById = async (req, res) => {
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };
+
+// Função para deletar um ticket
+exports.deleteTicket = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Busca o ticket no banco
+        const ticket = await Ticket.findByPk(id);
+
+        if (!ticket) {
+            return res.status(404).json({ message: 'Chamado não encontrado.' });
+        }
+
+        // Verifica permissão: admin ou criador do chamado
+        const usuarioLogado = req.user;
+        const isAdmin = usuarioLogado.role === 'admin';
+        const isOwner = ticket.usuarioId === usuarioLogado.id;
+
+        if (!isAdmin && !isOwner) {
+            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para excluir este chamado.' });
+        }
+
+        await ticket.destroy();
+
+        res.status(200).json({ message: 'Chamado removido com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao remover chamado:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
+};

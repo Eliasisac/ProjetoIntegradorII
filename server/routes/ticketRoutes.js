@@ -12,6 +12,9 @@ router.post('/', authMiddleware, ticketController.createTicket);
 router.get('/:id', authMiddleware, ticketController.getTicketById);
 // Nova rota de atualização
 router.put('/:id', authMiddleware, adminMiddleware, ticketController.updateTicket); 
+// Rota para excluir um ticket (apenas admin ou o criador)
+router.delete('/:id', authMiddleware, ticketController.deleteTicket);
+
 
 module.exports = router;
 
