@@ -1,3 +1,5 @@
+console.log('Arquivo ticketController.js carregado com sucesso.'); // ADICIONE ESTA LINHA!
+
 const Ticket = require('../models/Ticket');
 const Usuario = require('../models/Usuario');
 const School = require('../models/School');
@@ -55,6 +57,80 @@ exports.createTicket = async (req, res) => {//req e res são os objetos de solic
 
     } catch (error) {
         console.error('Erro ao criar chamado:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
+};
+
+// Função para atualizar um ticket (atribuir a um técnico, alterar status, etc.)
+exports.updateTicket = async (req, res) => {
+    try {
+        const { id } = req.params; // Pega o ID do ticket da URL
+        const { titulo, descricao, prioridade, status, tecnicoId } = req.body; // Pega os dados a serem atualizados
+
+        // Busca o ticket pelo ID
+        const ticket = await Ticket.findByPk(id);
+
+        if (!ticket) {
+            return res.status(404).json({ message: 'Chamado não encontrado.' });
+        }
+
+        // Atualiza os campos do ticket com os dados fornecidos
+        await ticket.update({
+            titulo: titulo || ticket.titulo, // Se o título for fornecido, atualiza; caso contrário, mantém o atual
+            descricao: descricao || ticket.descricao,
+            prioridade: prioridade || ticket.prioridade,
+            status: status || ticket.status,
+            tecnicoId: tecnicoId || ticket.tecnicoId, // Atribui um novo técnico, se fornecido
+        });
+
+        res.status(200).json({
+            message: 'Chamado atualizado com sucesso.',
+            ticket
+        });
+
+    } catch (error) {
+        console.error('Erro ao atualizar chamado:', error);
+        res.status(500).json({ message: 'Erro interno do servidor.' });
+    }
+};
+
+// Função para buscar um ticket por ID, incluindo verificações de permissão
+exports.getTicketById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Busca o ticket pelo ID, incluindo os dados do usuário associado
+        const ticket = await Ticket.findByPk(id, {
+            include: [{
+                model: Usuario,
+                as: 'criador',
+                attributes: ['id', 'nome', 'email', 'role']
+            }, {
+                model: Usuario,
+                as: 'responsavel',
+                attributes: ['id', 'nome', 'email', 'role']
+            }]
+        });
+
+        // Se o ticket não for encontrado, retorna 404
+        if (!ticket) {
+            return res.status(404).json({ message: 'Ticket não encontrado.' });
+        }
+
+        // Verifica a permissão do usuário para ver o ticket
+        const usuarioLogado = req.user;
+        const isAdmin = usuarioLogado.role === 'admin';
+        const isOwner = ticket.criadorId === usuarioLogado.id;
+        const isResponsible = ticket.responsavelId === usuarioLogado.id;
+
+        // Apenas admins, o criador ou o responsável podem ver o ticket
+        if (!isAdmin && !isOwner && !isResponsible) {
+            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para visualizar este ticket.' });
+        }
+
+        res.status(200).json(ticket);
+    } catch (error) {
+        console.error('Erro ao buscar ticket:', error);
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };

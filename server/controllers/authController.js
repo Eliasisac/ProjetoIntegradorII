@@ -18,12 +18,23 @@ const jwt = require('jsonwebtoken');
 // req.body contém os dados enviados pelo cliente (nome, email, senha, role, schoolId)
 exports.register = async (req, res) => {
     const { nome, email, senha, role, schoolId } = req.body;
+    // Verifique se a senha está chegando aqui!
+        console.log('Senha recebida:', senha);
+        console.log('Requisição de registro recebida.');
+        console.log('Corpo da requisição (req.body):', req.body);
+        console.log('Valores desestruturados:', { nome, email, senha, role, schoolId });
+        
 
     try {
         // Verifica se o usuário já existe
+       
         const existingUser = await Usuario.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: 'Email já cadastrado.' });
+        }
+
+        if (!senha) {
+            return res.status(400).json({ message: 'A senha é obrigatória.' });
         }
 
         // Criptografa a senha antes de salvar

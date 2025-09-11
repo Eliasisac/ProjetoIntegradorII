@@ -59,3 +59,60 @@ exports.updateUser = async (req, res) => {
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };
+
+
+// Função para obter um usuário pelo ID
+exports.getUserById = async (req, res) => {
+    try {
+        const userId = req.params.id; // Pega o ID da URL
+
+        // VERIFICAÇÃO DE PERMISSÃO:
+        // O usuário logado só pode ver seu próprio perfil, a menos que seja um admin.
+        if (req.user.id!== userId && req.user.role!== 'admin') {
+            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para visualizar este usuário.' });
+        }
+
+        // Busca o usuário no banco de dados
+        const user = await Usuario.findByPk(userId, {
+            attributes: { exclude: ['senha'] } // Exclui a senha por segurança
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Erro ao buscar usuário por ID:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
+};
+
+
+// Função para remover um usuário
+exports.deleteUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        // VERIFICAÇÃO DE PERMISSÃO:
+        // O usuário logado só pode deletar seu próprio perfil, a menos que seja um admin.
+        if (req.user.id !== userId && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para remover este usuário.' });
+        }
+
+        // Busca o usuário no banco de dados para verificar se ele existe
+        const user = await Usuario.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+
+        // Remove o usuário do banco de dados
+        await user.destroy();
+
+        res.status(200).json({ message: 'Usuário removido com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao remover usuário:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
+};

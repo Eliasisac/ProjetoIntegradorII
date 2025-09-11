@@ -16,6 +16,7 @@ const authRoutes = require('./routes/auth');// Rotas de autenticação
 const rotas = require('./routes/rotas'); // Outras rotas da aplicação
 const ticketRoutes = require('./routes/ticketRoutes');// Rotas relacionadas a chamados (tickets)
 const userRoutes = require('./routes/userRoutes');// Rotas relacionadas a usuários (atualização de perfil, etc.)
+const equipmentRoutes = require('./routes/equipmentRoutes'); // Rotas relacionadas a equipamentos
 
 
 // ==== Inicialização do Servidor Express ====
@@ -28,7 +29,9 @@ const userRoutes = require('./routes/userRoutes');// Rotas relacionadas a usuár
 // Esses middlewares devem ser os primeiros a serem usados
 // Eles processam as requisições antes que cheguem às rotas
 app.use(express.json()); 
-app.use(cors());         
+app.use(cors());
+// Use as rotas de equipamentos
+app.use('/api/equipments', equipmentRoutes);  
 
 // Serve arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, '..', 'public')));
