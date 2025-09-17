@@ -3,16 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
+  <link rel="stylesheet" href="login.css">
 </head>
+
 <body>
-  <h2>Login</h2>
-  <form id="login-form">
-    <label>Email:</label>
-    <input type="email" name="email" required><br><br>
-    <label>Senha:</label>
-    <input type="password" name="senha" required><br><br>
-    <button type="submit">Entrar</button>
-  </form>
+
+  <div class="login-container">
+    <div class="formulario-lateral">
+
+    <h2>Login</h2>
+
+    <form id="login-form">
+      <label>Email:</label>
+      <input type="email" name="email" required><br><br>
+      <label>Senha:</label>
+      <input type="password" name="senha" required><br><br>
+      <button type="submit">Entrar</button>
+    </form>
+    </div>
+
+    <div class="lateral-azul">
+      <img src="logo.png" alt="Logo"> <!-- Precisa por a logo aqui depois, blz galeris S2 -->
+      <p>Sem acesso? Entre em contato com sua equipe ou gestão!</p>
+      <button>Solicitar</button>
+    </div>
+
+  </div>
 
   <script src="/front/login/login.js"></script>
 
