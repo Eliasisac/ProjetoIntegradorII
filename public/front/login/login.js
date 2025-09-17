@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 localStorage.setItem('role', data.user.role);
                 console.log(data);
                 // Redireciona para a página protegida
+
+                
                 loadProtectedPage(data.user.role);
             }
              else {
