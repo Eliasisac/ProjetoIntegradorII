@@ -1,0 +1,31 @@
+    body {
+      background-color: #f4f6f9;
+    }
+    .sidebar {
+      height: 100vh;
+      background: #1f2937;
+      color: #fff;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: #cbd5e1;
+      padding: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-bottom: 5px;
+    }
+    .sidebar a:hover {
+      background: #374151;
+      color: #fff;
+    }
+    .content {
+      padding: 20px;
+    }
+    .pri-alta { background: #b82020; color: white; }
+    .pri-media { background: #ffb700; color: white; }
+    .pri-baixa { background: #06a36a; color: white; }
