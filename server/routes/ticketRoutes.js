@@ -6,6 +6,9 @@ const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
 
+// Nova rota para listar todos os tickets (com filtros e paginação)
+router.get('/', authMiddleware, ticketController.getAllTickets);
+
 // Rota para criar um novo chamado (protegida com autenticação)
 router.post('/', authMiddleware, ticketController.createTicket);
 // Rota para buscar um ticket por ID

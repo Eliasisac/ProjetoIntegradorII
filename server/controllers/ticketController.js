@@ -55,6 +55,7 @@ exports.createTicket = async (req, res) => {//req e res são os objetos de solic
             ticket: newTicket 
         });
 
+        
     } catch (error) {
         console.error('Erro ao criar chamado:', error);
         res.status(500).json({ message: 'Erro no servidor.' });
@@ -103,11 +104,11 @@ exports.getTicketById = async (req, res) => {
         const ticket = await Ticket.findByPk(id, {
             include: [{
                 model: Usuario,
-                as: 'criador',
+                as: 'creator',
                 attributes: ['id', 'nome', 'email', 'role']
             }, {
                 model: Usuario,
-                as: 'responsavel',
+                as: 'technician',
                 attributes: ['id', 'nome', 'email', 'role']
             }]
         });
@@ -164,3 +165,68 @@ exports.deleteTicket = async (req, res) => {
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };
+
+// Função para listar todos os tickets com filtros e paginação
+exports.getAllTickets = async (req, res) => {
+    try {
+        // Extrai os filtros da query string (req.query)
+        const { status, prioridade, tecnicoId, page, limit } = req.query;
+
+        // Converte os parâmetros de paginação para números inteiros
+        const pageNumber = parseInt(page, 10) || 1;
+        const pageSize = parseInt(limit, 10) || 10;
+        const offset = (pageNumber - 1) * pageSize;
+
+        // Constrói o objeto de filtros para o Sequelize
+        const filter = {};
+        if (status) {
+            filter.status = status;
+        }
+        if (prioridade) {
+            filter.prioridade = prioridade;
+        }
+        if (tecnicoId) {
+            filter.tecnicoId = tecnicoId;
+        }
+
+        console.log('Filtros aplicados:', filter);
+
+        // Busca os tickets no banco de dados com filtros e paginação
+        const { count, rows } = await Ticket.findAndCountAll({
+            where: filter,
+            limit: pageSize,
+            offset: offset,
+            include: [
+                {
+                    model: Usuario,
+                    as: 'creator',
+                    attributes: ['id', 'nome', 'email', 'role']
+                },
+                {
+                    model: Usuario,
+                    as: 'technician',
+                    attributes: ['id', 'nome', 'email', 'role']
+                },
+                {
+                    model: Equipment,
+                    as: 'Equipment',
+                    attributes: ['id', 'name', 'brand', 'model']
+                }
+            ]
+        });
+
+        // Retorna a lista de tickets com metadados de paginação
+        res.status(200).json({
+            totalTickets: count,
+            totalPages: Math.ceil(count / pageSize), // total pages
+            currentPage: pageNumber,
+            pageSize: pageSize,
+            tickets: rows
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar todos os tickets:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
+};
+
