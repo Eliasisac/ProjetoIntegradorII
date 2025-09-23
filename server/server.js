@@ -28,8 +28,9 @@ const equipmentRoutes = require('./routes/equipmentRoutes'); // Rotas relacionad
 //middleware é uma função que tem acesso ao objeto de solicitação (req), ao objeto de resposta (res) e à próxima função de middleware no ciclo de solicitação-resposta da aplicação
 // Esses middlewares devem ser os primeiros a serem usados
 // Eles processam as requisições antes que cheguem às rotas
-app.use(express.json()); 
 app.use(cors());
+app.use(express.json()); 
+
 // Use as rotas de equipamentos
 app.use('/api/equipments', equipmentRoutes);  
 

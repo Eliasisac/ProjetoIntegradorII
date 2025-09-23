@@ -5,33 +5,7 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
 
 .card {
   padding: 2em;
@@ -39,4 +13,131 @@
 
 .read-the-docs {
   color: #888;
+}
+
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Cor de fundo */
+    font-family: Arial, sans-serif;
+    width: '100%';
+    height: '100%'; 
+}
+
+.login-form-box, .login-info-box {
+    padding: 2em;
+  
+}
+
+.login-info-box {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 2em;
+}
+
+
+
+.login-form-box {
+    border-radius: 8px 0 0 8px;
+}
+
+.login-frame {
+    width: 839px;
+    height: 528px;; /* Ou a cor que você precisar */
+    border-radius: 8px; /* Para as bordas arredondadas do quadro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+}
+
+.logo {
+  width: 136px;
+  height: 125px;
+  margin: 2em;
+}
+
+
+
+.input-field {
+    margin-bottom: 1em;
+    
+}
+
+.input-field input {
+    width: 100%;
+    padding: 0.75em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+}
+
+.login-button {
+    width: 100%;
+    padding: 0.75em;
+    background-color: #007bff; /* Azul */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.request-button {
+    width: 100%;
+    padding: 0.75em;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1em;
+}
+
+.row{
+  width: 837px;
+  height: 528px
+
+}
+
+login-box {
+    /* Se a Row inteira (branco + azul) tem um tamanho fixo, defina aqui.
+    Pela Imagem 2, parece que apenas a parte azul tem 421x528.
+    Vamos deixar o login-box (a Row) ser flexível para conter as duas cols. */
+    display: flex; /* Garante que as colunas fiquem lado a lado */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra no conjunto */
+    border-radius: 16px; /* Arredondamento geral para o contêiner principal */
+    overflow: hidden; /* Importante para que as bordas arredondadas sejam visíveis */
+}
+
+.login-form-col {
+    background-color: white;
+    padding: 2em;
+    /* Largura ajustável, mas precisa ter a mesma altura da login-info-col */
+    /* height: 528px; */ /* Pode ser necessária se você definir altura fixa na Row */
+    flex: 1; /* Ocupa o espaço restante */
+    /* Bordas arredondadas da parte branca. Se for retângulo simples, não precisa.
+       Se tiver 16px nos cantos superiores e inferiores esquerdos, adicione aqui. */
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-top-right-radius: 0; /* Não arredondar aqui */
+    border-bottom-right-radius: 0; /* Não arredondar aqui */
+}
+
+.login-info-col {
+    background-color: #007bff; /* Azul primário */
+    color: white;
+    text-align: center;
+    padding: 2em;
+
+    /* Dimensões da Imagem 2 para a caixa azul */
+    width: 421px;
+    height: 528px; 
+
+    /* Borda customizada para a caixa azul - ajuste os valores conforme o visual do Figma */
+    /* Ordem: top-left, top-right, bottom-right, bottom-left */
+    border-radius: 
+        176px  /* Canto superior esquerdo */
+        16px   /* Canto superior direito */
+        16px   /* Canto inferior direito */
+        110px; /* Canto inferior esquerdo */
 }

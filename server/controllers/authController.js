@@ -37,6 +37,8 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: 'A senha é obrigatória.' });
         }
 
+       
+
         // Criptografa a senha antes de salvar
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(senha, salt);
@@ -84,31 +86,46 @@ exports.register = async (req, res) => {
 // exports.login = async (req, res) é a função que lida com o login de usuários existentes
 // Ela recebe o email e a senha via req.body, verifica se o usuário existe,
 // compara a senha fornecida com a senha criptografada no banco de dados,
+// ... (outras funções e imports acima)
+
+// Lógica de login de usuário
 exports.login = async (req, res) => {
-    // const { email, senha } = req.body; extrai o email e a senha do corpo da solicitação
-    const { email, senha } = req.body;
-
     try {
-        // Encontra o usuário pelo email
-        const user = await Usuario.findOne({ where: { email } });
-        if (!user) {
-            return res.status(400).json({ message: 'Email ou senha inválidos.' });
+        const { email, senha } = req.body;
+
+        console.log('1. Senha recebida do frontend:', senha);
+
+        // 1. Encontra o usuário pelo email, explicitamente incluindo o campo 'senha'
+        const user = await Usuario.findOne({
+            where: { email },
+            attributes: ['id', 'nome', 'email', 'role', 'schoolId', 'senha']
+        });
+
+        console.log('2. Objeto de usuário retornado do banco de dados:', user);
+        
+        // 2. Verifica se o usuário foi encontrado e se a senha existe no objeto
+        if (!user || !user.senha) {
+            console.log('3. Falha: Usuário não encontrado ou senha não retornada.');
+            return res.status(401).json({ message: 'Email ou senha incorretos.' });
         }
 
-        // Compara a senha fornecida com a senha criptografada do banco de dados
+        // 3. Compara a senha fornecida com a senha criptografada
         const isMatch = await bcrypt.compare(senha, user.senha);
+        console.log('4. Resultado da comparação de senhas (isMatch):', isMatch);
+
         if (!isMatch) {
-            return res.status(400).json({ message: 'Email ou senha inválidos.' });
+            console.log('5. Falha: A senha não corresponde.');
+            return res.status(401).json({ message: 'Email ou senha incorretos.' });
         }
-        
+
+        // 4. Se as verificações passarem, gera um token JWT
         const token = jwt.sign(
             { id: user.id, role: user.role, schoolId: user.schoolId },
-                'segredo123', // <-- Chave secreta deve ser esta
-                { expiresIn: '1h' }
-            );
+            'segredo123',
+            { expiresIn: '1h' }
+        );
 
-        
-
+        // 5. Retorna a resposta de sucesso com o token
         res.status(200).json({
             message: 'Login realizado com sucesso.',
             user: {

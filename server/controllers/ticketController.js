@@ -189,6 +189,12 @@ exports.getAllTickets = async (req, res) => {
             filter.tecnicoId = tecnicoId;
         }
 
+        const usuarioLogado = req.user; // Obtém o usuário do token
+        if (usuarioLogado.role !== 'admin') {
+            // Se não for admin, filtra para mostrar apenas os tickets do usuário logado
+            filter.usuarioId = usuarioLogado.id;
+        }
+
         console.log('Filtros aplicados:', filter);
 
         // Busca os tickets no banco de dados com filtros e paginação

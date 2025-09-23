@@ -26,6 +26,8 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
+  width: 1580px;
+  height: 900px;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -66,3 +68,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
