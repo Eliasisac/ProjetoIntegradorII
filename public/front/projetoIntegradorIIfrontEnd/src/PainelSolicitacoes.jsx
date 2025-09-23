@@ -1,11 +1,26 @@
 // src/PainelSolicitacoes.jsx
+// src/PainelSolicitacoes.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Button, Modal ,Container, Row, Col, Table, Form } from 'react-bootstrap'; // Importamos os componentes do Bootstrap
+import 'bootstrap-icons/font/bootstrap-icons.css'; // Importa a biblioteca de ícones
+import './assets/components/usuario.css'; // Importa o CSS específico para este componente
+import FormularioSolicitacao from './assets/components/FormularioSolicitacao';
 
 function PainelSolicitacoes() {
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
+    // Função para alternar o estado da sidebar
+    const toggleSidebar = () => {
+        setIsSidebarCollapsed(!isSidebarCollapsed);
+    };
+     // Funções para abrir e fechar o modal
+    const handleShowModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
 
     useEffect(() => {
         const fetchTickets = async () => {
@@ -49,60 +64,68 @@ function PainelSolicitacoes() {
     const prioridadeAlta = tickets.filter(t => t.prioridade === 'alta').length;
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-            <h2>Solicitações Pendentes</h2>
-
-            {/* Resumo dos Chamados */}
-            <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-                <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                    **{totalTickets}** Total de Chamados
-                </div>
-                <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                    **{prioridadeBaixa}** Prioridade Baixa
-                </div>
-                <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                    **{prioridadeMedia}** Prioridade Média
-                </div>
-                <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                    **{prioridadeAlta}** Prioridade Alta
-                </div>
-                <button
-                    style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#007bff',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Abrir Chamado
-                </button>
+        <div className={`app-wrapper ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+            {/* Sidebar - Agora uma div com classe 'sidebar' */}
+            <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+                <h2>
+                    <i className="bi bi-grid" onClick={toggleSidebar} style={{ cursor: 'pointer' }}></i>
+                    <span> Menu</span>
+                </h2>
+                <a href="#"><i className="bi bi-clock-history"></i> <span>Prioridades</span></a>
+                <a href="#"><i className="bi bi-list-task"></i> <span>Solicitações Pendentes</span></a>
+                {/* Outros itens */}
             </div>
 
-            {/* Tabela de Solicitações */}
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                <thead>
-                    <tr style={{ backgroundColor: '#f2f2f2' }}>
-                        <th style={{ padding: '10px', border: '1px solid #ccc' }}>ID</th>
-                        <th style={{ padding: '10px', border: '1px solid #ccc' }}>Prioridade</th>
-                        <th style={{ padding: '10px', border: '1px solid #ccc' }}>Tema</th>
-                        <th style={{ padding: '10px', border: '1px solid #ccc' }}>Solicitante</th>
-                        <th style={{ padding: '10px', border: '1px solid #ccc' }}>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tickets.map(ticket => (
-                        <tr key={ticket.id}>
-                            <td style={{ padding: '10px', border: '1px solid #ccc' }}>{ticket.id.substring(0, 8)}</td>
-                            <td style={{ padding: '10px', border: '1px solid #ccc' }}>{ticket.prioridade}</td>
-                            <td style={{ padding: '10px', border: '1px solid #ccc' }}>{ticket.titulo}</td>
-                            <td style={{ padding: '10px', border: '1px solid #ccc' }}>{ticket.creator.nome}</td>
-                            <td style={{ padding: '10px', border: '1px solid #ccc' }}>{ticket.status}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {/* Conteúdo Principal - Div com classe 'content' */}
+            <div className={`content ${isSidebarCollapsed ? 'expanded' : ''}`}>
+                <h4>Solicitações Pendentes <br />
+                    <small className="text-muted">Setembro 2025</small>
+                </h4>
+
+                {/* Seus botões de resumo */}
+                <div className="d-flex gap-2 mb-3">
+                    <Button className="btn btn-primary">Total de Chamados ({totalTickets})</Button>
+                    <Button className="btn pri-baixa">Prioridade Baixa ({prioridadeBaixa})</Button>
+                    <Button className="btn pri-media">Prioridade Média ({prioridadeMedia})</Button>
+                    <Button className="btn pri-alta">Prioridade Alta ({prioridadeAlta})</Button>
+                    <Button className="btn btn-primary ms-auto" onClick={handleShowModal}>Abrir Chamado</Button> {/* ms-auto joga para a direita */}
+                </div>
+
+                {/* Tabela de Solicitações */}
+                <div className="table-responsive">
+                    <table className="table table-hover align-middle">
+                        <thead className="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Prioridade</th>
+                                <th>Tema</th>
+                                <th>Solicitante</th>
+                                <th>Data de Abertura</th>
+                                <th>Cidade</th>
+                                <th>Marca</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tickets.map(ticket => (
+                                <tr key={ticket.id}>
+                                    <td>{ticket.id.substring(0, 8)}</td>
+                                    <td className={`pri-${ticket.prioridade}`}>
+                                        <span className={`badge ${ticket.prioridade === 'baixa' ? 'pri-baixa' : ticket.prioridade === 'media' ? 'pri-media' : 'pri-alta'}`}>
+                                            {ticket.prioridade}
+                                        </span>
+                                    </td>
+                                    <td>{ticket.titulo}</td>
+                                    <td>{ticket.creator.nome}</td>
+                                    <td>{new Date(ticket.dataAbertura).toLocaleDateString()}</td>
+                                    <td>{ticket.cidade}</td>
+                                    <td>{ticket.marca}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <FormularioSolicitacao show={showModal} handleClose={handleCloseModal} />
         </div>
     );
 }

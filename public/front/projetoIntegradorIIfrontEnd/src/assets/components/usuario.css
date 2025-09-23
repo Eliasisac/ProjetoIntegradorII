@@ -1,0 +1,114 @@
+/* src/components/Dashboard.css */
+
+body {
+    background-color: #f4f6f9;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px; 
+    background: #1f2937;
+    color: #fff;
+    padding: 20px;
+    transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar h2 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar a {
+    display: block;
+    color: #cbd5e1;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+.sidebar a:hover {
+    background: #374151;
+    color: #fff;
+}
+
+/* Botão de collapse */
+.sidebar.collapsed {
+    width: 70px;
+    padding: 20px 10px;
+}
+.sidebar.collapsed span {
+    display: none; 
+}
+
+/* Ajuste do conteúdo para a sidebar colapsar normal (deu trabalho hein kkk) */
+.content {
+    padding: 20px;
+    margin-left: 250px; /* alinhado à sidebar normal */
+}
+
+/* Quando a sidebar estiver colapsada */
+.content.expanded {
+    margin-left: 70px; 
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+table th, table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Prioridades */
+.pri-alta {
+    background-color: #FF2436 !important; /* Vermelho */
+    color: white !important;
+    border-color: #FF2436 !important;
+}
+.pri-media {
+   background-color: #FAA50A !important; /* Amarelo/Laranja */
+    color: white !important;
+    border-color: #FAA50A !important;
+}
+.pri-baixa {
+     background-color: #27AE60 !important; /* Verde */
+    color: white !important;
+    border-color: #27AE60 !important;
+}
+
+
+/* Estilo para o modal que desliza da direita para a esquerda */
+.modal-right .modal-dialog {
+    position: fixed;
+    margin: auto;
+    width: 900px; /* Ajuste para a largura da sua imagem */
+    height: 100%;
+    transform: translate3d(0, 0, 0);
+    top: 0;
+    right: 0;
+    transition: transform 0.3s ease-out;
+}
+
+.modal-right.modal.show .modal-dialog {
+    transform: translate3d(0, 0, 0);
+}
+
+.modal-right .modal-content {
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+}
