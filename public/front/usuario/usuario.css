@@ -90,10 +90,4 @@ table th, table td {
   color: white;
 }
 
-.chart-container {
-  position: relative; 
-  height:60vh; 
-  width:60vh; 
-  margin:auto;
-}
 
