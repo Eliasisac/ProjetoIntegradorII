@@ -1,0 +1,93 @@
+body {
+  background-color: #f4f6f9;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px; 
+  background: #1f2937;
+  color: #fff;
+  padding: 20px;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar h2 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar a {
+  display: block;
+  color: #cbd5e1;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-bottom: 5px;
+}
+
+.sidebar a:hover {
+  background: #374151;
+  color: #fff;
+}
+
+/* Botão de collapse */
+.sidebar.collapsed {
+  width: 70px;
+  padding: 20px 10px;
+}
+.sidebar.collapsed span {
+  display: none; 
+}
+
+/* Ajuste do conteúdo para a sidebar colapsar normal (deu trabalho hein kkk) */
+.content {
+  padding: 20px;
+  margin-left: 250px; /* alinhado à sidebar normal */
+}
+
+/* Quando a sidebar estiver colapsada */
+.sidebar.collapsed ~ .content {
+  margin-left: 70px; 
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+table th, table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prioridades */
+.pri-alta {
+  background: #b82020;
+  color: white;
+}
+.pri-media {
+  background: #ffb700;
+  color: white;
+}
+.pri-baixa {
+  background: #06a36a;
+  color: white;
+}
+
+.abrir-chamado{
+  background:#134dcc;
+  color: white;
+}
+
+

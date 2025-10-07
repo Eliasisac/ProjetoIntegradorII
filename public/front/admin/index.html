@@ -1,189 +1,119 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo</title>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+
 </head>
 <body>
-    <!-- primeira linha (titulo) -->
-    <h1>Painel Administrativo</h1>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <h2>
+          <i class="bi bi-list-nested" id="toggle-btn" style="cursor:pointer;"></i>
+          <span> Menu</span>
+        </h2>
+        <a href="index.html"><i class="bi bi-bar-chart-line"></i> <span>Dashboard</span></a>
+        <a href="secundario/priori.html"><i class="bi bi-exclamation-square"></i> <span>Prioridades</span></a>
+        <a href="secundario/pendentes.html"><i class="bi bi-clipboard-check"></i> <span>Solicitações Pendentes</span></a>
+        <a href="/front/login/index.html"><i class="bi bi-box-arrow-left"></i> <span>Sair</span></a>
+      </div>
 
-    <!-- Nav Bar pros botões -->
-    <header>
-        <nav>
-            <ul>
-            <li><a href="#usuarios">Usuários</a></li>
-            <li><a href="#chamados">Chamados</a></li>
-            <li><a href="#metricas">Métricas</a></li>
-            <li><a href="#logs">Logs do Sistema</a></li>
-            <li><a href="#backup">Backup</a></li>
-            </ul>
-        </nav>
-        <button id="logoutBtn">Sair</button>
-    </header>
-
-    <!-- Tela central -->
-     <main>
-        <!-- seção de usuarios -->
-        <section id="usuarios">
-            <h2>Gerenciar Usuários</h2>
-            <button id="criarUsuario">Criar Usuário</button>
-            <button id="editarUsuario">Editar Usuário</button>
-            <button id="deletarUsuario">Deletar Usuário</button>
-
-            <div id="listaUsuarios">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Função</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- preenchido via JS -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Logs 
-        
-         Aqui vão ter opções pra coisas diferentes mas pode fazer o css igual pra todos que da certo
-         é so um bloco com texto então não precisa de muita coisa 
-         
-         EX:
-         +---------------------------------------------------------+
-         | falha de login no usuario {username}. Senha incorreita. |
-         +---------------------------------------------------------+
-         
-         -->
-        <section id="logs">
-            <h2>Logs do Sistema</h2>
-
-            <div id="filtros">
-                <button data-categoria="autenticacao">Autenticação</button>
-                <button data-categoria="banco">Banco de Dados</button>
-                <button data-categoria="api">API</button>
-                <button data-categoria="sistema">Sistema</button>
-                <button data-categoria="frontend">Interface</button>
-                <button data-categoria="email">Notificações</button>
-                <button data-categoria="auditoria">Auditoria</button>
-            </div>
+      <!-- Conteúdo principal -->
+      <div class="content" id="content">
+        <div class="d-flex align-items-center mb-3">
+         <img class="logo me-3" src="../../images/LogodaEmpresa.png" alt="Logo" style="width:50px; height:auto;">
+          <div>
+            <h4 class="mb-0">Solicitações Pendentes</h4>
+            <small class="text-muted">Setembro 2025</small>
+          </div>
+        </div>
 
 
-            <div class="log-categoria" id="logs-autenticacao">
-                <h3>Autenticação e Autorização</h3>
-                <ul>
-                    <!-- logs carregados via JS -->
-                </ul>
-            </div>
+        <div class="d-flex gap-2 mb-3">
+          <button class="btn btn-primary">Total de Chamados</button>
+          <button class="btn pri-baixa">Prioridade Baixa</button>
+          <button class="btn pri-media">Prioridade Média</button>
+          <button class="btn pri-alta">Prioridade Alta</button>
+          <button class="btn abrir-chamado"> <i class="bi bi-plus-square"></i>  Abrir Chamado</button>
+        </div>
 
-            <div class="log-categoria" id="logs-banco">
-                <h3>Banco de Dados</h3>
-                <ul>
-                    <!-- logs carregados via JS -->
-                </ul>
-            </div>
+        <div class="d-flex gap-2 mb-3 flex-wrap">
+          <select class="form-select w-auto" id="selectAno">
+            <option value="2025" selected>2025</option>
+            <option value="2027">2027</option>
+            <option value="2026">2026</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+          </select>
 
-            <div class="log-categoria" id="logs-api">
-                <h3>API / Integrações</h3>
-                <ul>
-                    <!-- logs carregados via JS -->
-                </ul>
-            </div>
+          <select class="form-select w-auto" id="selectMes">
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5">Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9" selected>Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
 
-            <div class="log-categoria" id="logs-sistema">
-                <h3>Sistema / Servidor</h3>
-                <ul>
-                    <!-- logs carregados via JS -->
-                </ul>
-            </div>
+          <select class="form-select w-auto" id="selectPrioridade">
+            <option value="">Prioridades</option>
+            <option value="alta">Alta</option>
+            <option value="media">Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
 
-            <div class="log-categoria" id="logs-frontend">
-                <h3>Front-end / Interface</h3>
-                <ul>
-                    <!-- logs carregados via JS -->
-                </ul>
-            </div>
+          <select class="form-select w-auto" id="selectCidade">
+            <option value="">Cidade</option>
+          </select>
 
-            <div class="log-categoria" id="logs-email">
-                <h3>Notificações / Emails</h3>
-                <ul>
-                    <!-- logs carregados via JS -->
-                </ul>
-            </div>
+          <select class="form-select w-auto" id="selectMarca">
+            <option value="">Marca</option>
+          </select>
+        </div>
 
-            <div class="log-categoria" id="logs-auditoria">
-                <h3>Auditoria / Eventos</h3>
-                <ul>
-                    <!-- logs carregados via JS -->
-                </ul>
-            </div>
-        </section>
+    <!-- grafico dashboard -->
 
-        <!-- Chamados -->
-        <section id="chamados">
-            <h2>Chamados</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Usuário</th>
-                        <th>Técnico</th>
-                        <th>Status</th>
-                        <th>Descrição</th>
-                        <th>Anotações</th>
-                        <th>Última atualização</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <!-- preenchido via JS -->
-                </tbody>
-            </table>
-        </section>
+        <div class="chart-container">
+        <canvas id="graficoChamados"></canvas>
+        </div>
 
-        <!-- Backup -->
-        <section id="backup">
-            <h2>Backup do Banco de Dados</h2>
-            <button id="fazerBackup">Fazer Backup</button>
-            <div id="recoverDB">
-                <input type="file" id="uploadBackup">
-                <button id="restaurarBackup">Restaurar Backup</button>
-            </div>
-            <button id="resetDB">Reiniciar Banco de Dados</button>
-        </section>
+      </div>
+    </div>
+  </div>
 
-        <!-- Métricas -->
-        <section id="metricas">
-            <h2>Métricas de Atendimento</h2>
-            <label for="tecnicoFiltro">Filtrar por Técnico:</label>
-                <select id="tecnicoFiltro">
-                    <option value="">Todos</option>
-                    <!-- opções adicionadas via JS -->
-                </select>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/front/admin/admin.js"></script>
 
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID Chamado</th>
-                        <th>Técnico</th>
-                        <th>Tempo de Espera</th>
-                        <th>Tempo de Atendimento</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <!-- preenchido via JS -->
-                </tbody>
-            </table>
-        </section>
-  </main>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Script do gráfico -->
+    <script src="grafico.js"></script>
 
-<script src="/front/admin/admin.js"></script>
 
+    <!-- Esse script é para a funcionalidade da sidebar, joia :) -->
+  <script>
+    const toggleBtn = document.getElementById("toggle-btn");
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("collapsed");
+      content.classList.toggle("expanded");
+    });
+  </script>
 </body>
 </html>
