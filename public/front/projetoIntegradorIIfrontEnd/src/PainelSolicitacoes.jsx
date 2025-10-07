@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button, Modal ,Container, Row, Col, Table, Form } from 'react-bootstrap'; // Importamos os componentes do Bootstrap
 import 'bootstrap-icons/font/bootstrap-icons.css'; // Importa a biblioteca de ícones
 import './assets/components/usuario.css'; // Importa o CSS específico para este componente
-import FormularioSolicitacao from './assets/components/FormularioSolicitacao';
+import FormularioNovoChamado from './assets/components/FormularioNovoChamado'
 
 function PainelSolicitacoes() {
     const [tickets, setTickets] = useState([]);
@@ -19,7 +19,10 @@ function PainelSolicitacoes() {
         setIsSidebarCollapsed(!isSidebarCollapsed);
     };
      // Funções para abrir e fechar o modal
-    const handleShowModal = () => setShowModal(true);
+    const handleShowModal = () => {
+    console.log("Clicou no botão para abrir o modal!");
+    setShowModal(true);
+    };
     const handleCloseModal = () => setShowModal(false);
 
     useEffect(() => {
@@ -88,7 +91,13 @@ function PainelSolicitacoes() {
                     <Button className="btn pri-baixa">Prioridade Baixa ({prioridadeBaixa})</Button>
                     <Button className="btn pri-media">Prioridade Média ({prioridadeMedia})</Button>
                     <Button className="btn pri-alta">Prioridade Alta ({prioridadeAlta})</Button>
-                    <Button className="btn btn-primary ms-auto" onClick={handleShowModal}>Abrir Chamado</Button> {/* ms-auto joga para a direita */}
+                   <a
+                        className="btn btn-primary ms-auto"
+                        onClick={handleShowModal}
+                        href="#"
+                    >
+                        Abrir Chamado
+                    </a>
                 </div>
 
                 {/* Tabela de Solicitações */}
@@ -116,7 +125,7 @@ function PainelSolicitacoes() {
                                     </td>
                                     <td>{ticket.titulo}</td>
                                     <td>{ticket.creator.nome}</td>
-                                    <td>{new Date(ticket.dataAbertura).toLocaleDateString()}</td>
+                                   <td>{new Date(ticket.dataAbertura).toLocaleDateString('pt-BR')}</td>
                                     <td>{ticket.cidade}</td>
                                     <td>{ticket.marca}</td>
                                 </tr>
@@ -125,7 +134,7 @@ function PainelSolicitacoes() {
                     </table>
                 </div>
             </div>
-            <FormularioSolicitacao show={showModal} handleClose={handleCloseModal} />
+             <FormularioNovoChamado show={showModal} handleClose={handleCloseModal} />
         </div>
     );
 }

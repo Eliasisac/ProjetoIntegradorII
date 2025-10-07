@@ -1,4 +1,5 @@
 // src/assets/components/FormularioSolicitacao.jsx
+
 import React from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -7,7 +8,10 @@ const FormularioSolicitacao = ({ show, handleClose }) => {
     return (
         <Modal show={show} onHide={handleClose} size="lg" dialogClassName="modal-right">
             <Modal.Header closeButton>
-                <Modal.Title>Solicitação</Modal.Title>
+                <div className="d-flex align-items-center">
+                    <img src="/LogodaEmpresa.png" alt="Logo" style={{ width: '136px', height: '125px' }} className="me-2" />
+                    <h5 className="mb-0 ms-2">Solicitação</h5>
+                </div>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -50,8 +54,11 @@ const FormularioSolicitacao = ({ show, handleClose }) => {
                         <Form.Control as="textarea" rows={3} placeholder="Computador com Hd Cheio" disabled />
                     </Form.Group>
                     <hr />
-                    {/* Exemplo de seção de resolução - você pode adaptá-la */}
-                    <Form.Group className="mb-3">
+                    <div className="mb-3">
+                        <p className="mb-0">Elias Isac</p>
+                        <small className="text-muted">29/09/2025 – 16:26</small>
+                    </div>
+                    <Form.Group>
                         <Form.Label>Resolução</Form.Label>
                         <Form.Control as="textarea" rows={3} placeholder="Realizado acesso Remoto e foi resolvido a tratativa" />
                     </Form.Group>
