@@ -64,31 +64,28 @@ body {
 
 table {
     width: 100%;
-    table-layout: fixed;
+    /* table-layout: fixed; */ /* Removido para permitir que as colunas se ajustem ao conteúdo */
 }
 
 .table-responsive {
     overflow-x: auto;
 }
 
-table th, table td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    /* Aumenta o padding para dar mais espaço, se necessário */
-    padding: 0.75rem; 
-    /* Define uma largura mínima para as colunas de data/solicitante */
-}
-.table th:nth-child(5),
 .table td:nth-child(5) { 
-    min-width: 120px; /* Tente AUMENTAR este valor para 140px ou 150px */
-    white-space: nowrap; /* Garante que o texto não quebre */
-    /* text-align: center; (opcional) */
+    min-width: 150px; /* Largura aumentada para caber "Data de Abertura" */
 }
 
 .table th:nth-child(4) { /* Coluna de Solicitante */
     min-width: 150px; 
 }
+
+/* Aplica truncamento apenas em colunas específicas, se necessário */
+/* .table td:nth-child(3) { 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+} */
 
 /* Prioridades */
 .pri-alta {
