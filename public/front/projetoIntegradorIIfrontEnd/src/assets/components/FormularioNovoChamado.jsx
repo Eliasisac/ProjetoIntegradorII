@@ -10,7 +10,7 @@ const FormularioNovoChamado = ({ show, handleClose }) => {
         titulo: '',
         descricao: '',
         prioridade: '',
-        equipmentId: null,
+        equipmentId: '',
         cidade: '', // Novo campo para a cidade
     });
 
@@ -122,19 +122,14 @@ const FormularioNovoChamado = ({ show, handleClose }) => {
                         />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Equipamento (Opcional)</Form.Label>
-                        <Form.Select
-                            name="equipmentId"
-                            value={novoChamado.equipmentId || ''}
+                        <Form.Label>Equipamento (Descrição Opcional)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="nomeEquipamento"
+                            value={novoChamado.nomeEquipamento}
                             onChange={handleChange}
-                        >
-                            <option value="">Nenhum Equipamento</option>
-                            {equipamentos.map(equipamento => (
-                                <option key={equipamento.id} value={equipamento.id}>
-                                    {`${equipamento.nome} - ${equipamento.marca} - ${equipamento.modelo}`}
-                                </option>
-                            ))}
-                        </Form.Select>
+                            placeholder="Ex: Computador 5, Impressora Epson"
+                        />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Descrição Detalhada</Form.Label>

@@ -221,6 +221,9 @@ exports.getAllTickets = async (req, res) => {
             ]
         });
 
+        // DEBUG: Imprime os dados que vieram do banco para o console do servidor
+        console.log('DEBUG: Dados dos tickets retornados do banco:', JSON.stringify(rows, null, 2));
+
         // Retorna a lista de tickets com metadados de paginação
         res.status(200).json({
             totalTickets: count,
@@ -235,4 +238,3 @@ exports.getAllTickets = async (req, res) => {
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };
-

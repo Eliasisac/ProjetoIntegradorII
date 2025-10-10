@@ -2,7 +2,7 @@
 // src/PainelSolicitacoes.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Modal ,Container, Row, Col, Table, Form } from 'react-bootstrap'; // Importamos os componentes do Bootstrap
+import { Button, Modal, Container, Row, Col, Table, Form } from 'react-bootstrap'; // Importamos os componentes do Bootstrap
 import 'bootstrap-icons/font/bootstrap-icons.css'; // Importa a biblioteca de ícones
 import './assets/components/usuario.css'; // Importa o CSS específico para este componente
 import FormularioNovoChamado from './assets/components/FormularioNovoChamado'
@@ -18,10 +18,9 @@ function PainelSolicitacoes() {
     const toggleSidebar = () => {
         setIsSidebarCollapsed(!isSidebarCollapsed);
     };
-     // Funções para abrir e fechar o modal
+    // Funções para abrir e fechar o modal
     const handleShowModal = () => {
-    console.log("Clicou no botão para abrir o modal!");
-    setShowModal(true);
+        setShowModal(true);
     };
     const handleCloseModal = () => setShowModal(false);
 
@@ -46,6 +45,8 @@ function PainelSolicitacoes() {
                 }
 
                 const data = await response.json();
+            
+
                 setTickets(data.tickets);
             } catch (err) {
                 setError(err.message);
@@ -91,7 +92,7 @@ function PainelSolicitacoes() {
                     <Button className="btn pri-baixa">Prioridade Baixa ({prioridadeBaixa})</Button>
                     <Button className="btn pri-media">Prioridade Média ({prioridadeMedia})</Button>
                     <Button className="btn pri-alta">Prioridade Alta ({prioridadeAlta})</Button>
-                   <a
+                    <a
                         className="btn btn-primary ms-auto"
                         onClick={handleShowModal}
                         href="#"
@@ -125,7 +126,17 @@ function PainelSolicitacoes() {
                                     </td>
                                     <td>{ticket.titulo}</td>
                                     <td>{ticket.creator.nome}</td>
-                                   <td>{new Date(ticket.dataAbertura).toLocaleDateString('pt-BR')}</td>
+                                    {ticket.createdAt ? (
+                                        <td>
+                                            {new Date(ticket.createdAt).toLocaleDateString('pt-BR', {
+                                                year: 'numeric',
+                                                month: '2-digit',
+                                                day: '2-digit'
+                                            })}
+                                        </td>
+                                    ) : (
+                                        <td>N/A</td>
+                                    )}
                                     <td>{ticket.cidade}</td>
                                     <td>{ticket.marca}</td>
                                 </tr>
@@ -134,7 +145,7 @@ function PainelSolicitacoes() {
                     </table>
                 </div>
             </div>
-             <FormularioNovoChamado show={showModal} handleClose={handleCloseModal} />
+            <FormularioNovoChamado show={showModal} handleClose={handleCloseModal} />
         </div>
     );
 }

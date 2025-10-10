@@ -67,10 +67,27 @@ table {
     table-layout: fixed;
 }
 
+.table-responsive {
+    overflow-x: auto;
+}
+
 table th, table td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    /* Aumenta o padding para dar mais espaço, se necessário */
+    padding: 0.75rem; 
+    /* Define uma largura mínima para as colunas de data/solicitante */
+}
+.table th:nth-child(5),
+.table td:nth-child(5) { 
+    min-width: 120px; /* Tente AUMENTAR este valor para 140px ou 150px */
+    white-space: nowrap; /* Garante que o texto não quebre */
+    /* text-align: center; (opcional) */
+}
+
+.table th:nth-child(4) { /* Coluna de Solicitante */
+    min-width: 150px; 
 }
 
 /* Prioridades */
