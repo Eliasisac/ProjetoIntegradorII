@@ -1,87 +1,132 @@
-// src/components/Dashboard.jsx
-import React, { useState } from 'react';
-import { Button, Container, Row, Col, Table, Form } from 'react-bootstrap';
+// src/assets/components/DashboardSolicitacoes.jsx
+
+import React from 'react';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import './Dashboard.css'; // Importa o CSS específico para este componente
+// Importe componentes de gráfico aqui (se usar um componente de terceiros como Recharts, Chart.js etc.)
 
-const Dashboard = () => {
-    // Estado para controlar o colapso da sidebar
-    const [isCollapsed, setIsCollapsed] = useState(false);
-
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
+const DashboardSolicitacoes = () => {
+    // Dados de exemplo para o dashboard
+    const metrics = {
+        total: 318,
+        abertas: 45,
+        emAndamento: 120,
+        encerradas: 153,
+        prioridadeAlta: 15,
     };
 
     return (
-        <Container fluid>
-            <Row>
-                {/* Sidebar */}
-                <Col className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-                    <h2>
-                        <i className="bi bi-grid" onClick={toggleSidebar} style={{ cursor: 'pointer' }}></i>
-                        <span> Menu</span>
-                    </h2>
-                    <a href="#"><i className="bi bi-clock-history"></i> <span>Prioridades</span></a>
-                    <a href="#"><i className="bi bi-list-task"></i> <span>Solicitações Pendentes</span></a>
+        <Container fluid className="p-4">
+            <h2 className="mb-4">
+                <i className="bi bi-speedometer2 me-2"></i> Dashboard de Solicitações
+            </h2>
+
+            {/* Linha de Métricas Chave (Key Metrics) */}
+            <Row className="mb-4">
+                {/* Cartão de Total */}
+                <Col md={6} lg={3}>
+                    <Card bg="primary" text="white" className="mb-3 shadow">
+                        <Card.Body>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <Card.Title as="h5">Total de Chamados</Card.Title>
+                                    <Card.Text as="h2">{metrics.total}</Card.Text>
+                                </div>
+                                <i className="bi bi-ticket-detailed-fill display-4"></i>
+                            </div>
+                        </Card.Body>
+                    </Card>
                 </Col>
 
-                {/* Conteúdo principal */}
-                <Col className={`content ${isCollapsed ? 'expanded' : ''}`}>
-                    <h4>
-                        Solicitações Pendentes <br />
-                        <h5><small className="text-muted">Setembro 2025</small></h5>
-                    </h4>
+                {/* Cartão de Abertas */}
+                <Col md={6} lg={3}>
+                    <Card bg="warning" text="dark" className="mb-3 shadow">
+                        <Card.Body>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <Card.Title as="h5">Chamados Abertos</Card.Title>
+                                    <Card.Text as="h2">{metrics.abertas}</Card.Text>
+                                </div>
+                                <i className="bi bi-box-seam display-4"></i>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
 
-                    <div className="d-flex gap-2 mb-3">
-                        <Button variant="primary">Total de Chamados</Button>
-                        <Button className="pri-baixa">Prioridade Baixa</Button>
-                        <Button className="pri-media">Prioridade Média</Button>
-                        <Button className="pri-alta">Prioridade Alta</Button>
-                    </div>
+                {/* Cartão de Em Andamento */}
+                <Col md={6} lg={3}>
+                    <Card bg="info" text="white" className="mb-3 shadow">
+                        <Card.Body>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <Card.Title as="h5">Em Andamento</Card.Title>
+                                    <Card.Text as="h2">{metrics.emAndamento}</Card.Text>
+                                </div>
+                                <i className="bi bi-hourglass-split display-4"></i>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
 
-                    <div className="d-flex gap-2 mb-3 flex-wrap">
-                        <Form.Select className="w-auto" id="selectAno">
-                            <option value="2025" selected>2025</option>
-                            {/* ... outras opções */}
-                        </Form.Select>
-                        <Form.Select className="w-auto" id="selectMes">
-                            <option value="9" selected>Setembro</option>
-                            {/* ... outras opções */}
-                        </Form.Select>
-                        <Form.Select className="w-auto" id="selectPrioridade">
-                            <option value="">Prioridades</option>
-                            {/* ... outras opções */}
-                        </Form.Select>
-                        <Form.Select className="w-auto" id="selectCidade">
-                            <option value="">Cidade</option>
-                            {/* ... outras opções */}
-                        </Form.Select>
-                        <Form.Select className="w-auto" id="selectMarca">
-                            <option value="">Marca</option>
-                            {/* ... outras opções */}
-                        </Form.Select>
-                    </div>
+                {/* Cartão de Encerradas */}
+                <Col md={6} lg={3}>
+                    <Card bg="success" text="white" className="mb-3 shadow">
+                        <Card.Body>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <Card.Title as="h5">Encerradas</Card.Title>
+                                    <Card.Text as="h2">{metrics.encerradas}</Card.Text>
+                                </div>
+                                <i className="bi bi-check-circle-fill display-4"></i>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
 
-                    <div className="table-responsive">
-                        <Table hover>
-                            <thead className="table-dark">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Prioridade</th>
-                                    <th>Tema</th>
-                                    <th>Solicitante</th>
-                                    <th>Data de Abertura</th>
-                                    <th>Cidade</th>
-                                    <th>Marca</th>
-                                </tr>
-                            </thead>
-                            <tbody id="listaChamados"></tbody>
-                        </Table>
-                    </div>
+            {/* Linha de Visualizações/Gráficos */}
+            <Row className="mb-4">
+                {/* Coluna para Gráfico de Status (ex: Pizza/Donut) */}
+                <Col lg={6}>
+                    <Card className="shadow">
+                        <Card.Header>Chamados por Status</Card.Header>
+                        <Card.Body>
+                            {/* Aqui entraria o componente de gráfico (Gráfico de Pizza/Barra) */}
+                            <div style={{ height: '300px', backgroundColor: '#f8f9fa', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                [Gráfico de Status: Aberto vs. Encerrado vs. Em Andamento]
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+                {/* Coluna para Gráfico de Prioridade (ex: Barra) */}
+                <Col lg={6}>
+                    <Card className="shadow">
+                        <Card.Header>Chamados por Prioridade</Card.Header>
+                        <Card.Body>
+                            {/* Aqui entraria o componente de gráfico (Gráfico de Barras) */}
+                            <div style={{ height: '300px', backgroundColor: '#f8f9fa', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                [Gráfico de Prioridade: Alta, Média, Baixa]
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+            
+            {/* Linha de Tabela ou Outras Métricas */}
+            <Row>
+                <Col>
+                    <Card className="shadow">
+                        <Card.Header>Chamados com Prioridade Alta ({metrics.prioridadeAlta})</Card.Header>
+                        <Card.Body>
+                            {/* Aqui entraria uma tabela de chamados recentes ou críticos */}
+                            <p>Tabela de Chamados Críticos/Recentes</p>
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
         </Container>
     );
 };
 
-export default Dashboard;
+export default DashboardSolicitacoes;
