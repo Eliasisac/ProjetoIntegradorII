@@ -9,7 +9,7 @@ const sequelize = require('./config/database');// Importa a instância do Sequel
 // Importa as associações entre os modelos (se houver)
 const associations = require('./models/associations');// Importa as associações entre os modelos (se houver)
 // Importa a função para criar um usuário admin se não existir
-const criarAdminSeNaoExistir = require('./seeds/criarAdmin.js');  // Função para criar um usuário admin se não existir
+const criarAdminSeNaoExistir = require('./seeds/criarAdmin.js'); // Função para criar um usuário admin se não existir
 // Importa as rotas da aplicação
 const authRoutes = require('./routes/auth');// Rotas de autenticação 
 // Rotas de autenticação (login, registro, etc.)
@@ -18,10 +18,12 @@ const ticketRoutes = require('./routes/ticketRoutes');// Rotas relacionadas a ch
 const userRoutes = require('./routes/userRoutes');// Rotas relacionadas a usuários (atualização de perfil, etc.)
 const equipmentRoutes = require('./routes/equipmentRoutes'); // Rotas relacionadas a equipamentos
 
+const schoolRoutes = require('./routes/SchoolRoutes.js');
+
 
 // ==== Inicialização do Servidor Express ====
-    const app = express();
-    const PORT = process.env.PORT || 5000;
+  const app = express();
+  const PORT = process.env.PORT || 5000;
 
 
 // ==== Middlewares ====
@@ -31,8 +33,9 @@ const equipmentRoutes = require('./routes/equipmentRoutes'); // Rotas relacionad
 app.use(cors());
 app.use(express.json()); 
 
-// Use as rotas de equipamentos
-app.use('/api/equipments', equipmentRoutes);  
+
+app.use('/api/equipments', equipmentRoutes); 
+app.use('/api/schools', schoolRoutes);
 
 // Serve arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, '..', 'public')));
@@ -40,14 +43,13 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // ==== Rotas da API ====
 // Rota para a tela de login
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'front', 'login', 'login.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'front', 'login', 'login.html'));
 });
 
 // Rotas de autenticação
 app.use('/api/auth', authRoutes);
 
 // Rotas de chamados (tickets)
-
 app.use('/api/tickets', ticketRoutes);
 
 // Rotas de usuários
@@ -60,15 +62,14 @@ app.use('/', rotas);
 
 // ==== Sincronização do Banco de Dados e Início do Servidor ====
 sequelize.sync({ force: false })
-    .then(() => {
-        console.log('Banco de dados conectado e sincronizado com sucesso.');
-        app.listen(PORT, () => {
-            console.log(`Servidor rodando na porta ${PORT}`);
-        });
-        criarAdminSeNaoExistir();
-    })
-    .catch(err => {
-        console.error('Erro ao conectar ou sincronizar o banco de dados:', err);
-        process.exit(1);
+  .then(() => {
+    console.log('Banco de dados conectado e sincronizado com sucesso.');
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
     });
-
+    criarAdminSeNaoExistir();
+  })
+  .catch(err => {
+    console.error('Erro ao conectar ou sincronizar o banco de dados:', err);
+    process.exit(1);
+  });

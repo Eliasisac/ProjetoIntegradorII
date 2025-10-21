@@ -92,12 +92,12 @@
     cursor: pointer;
     margin-top: 1em;
 }
-
+/* 
 .row{
   width: 837px;
   height: 528px
 
-}
+} */
 
 login-box {
     /* Se a Row inteira (branco + azul) tem um tamanho fixo, defina aqui.

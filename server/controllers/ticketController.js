@@ -1,240 +1,270 @@
-console.log('Arquivo ticketController.js carregado com sucesso.'); // ADICIONE ESTA LINHA!
+// controllers/ticketController.js
 
 const Ticket = require('../models/Ticket');
 const Usuario = require('../models/Usuario');
 const School = require('../models/School');
-const Equipment = require('../models/Equipment');
-// server/controllers/ticketController.js
-// Controlador para gerenciar operações relacionadas a chamados (tickets)
-// Importa os modelos necessários do Sequelize
-//  Ticket é o modelo do Sequelize para a tabela de chamados
-//  Usuario é o modelo do Sequelize para a tabela de usuários
-//  School é o modelo do Sequelize para a tabela de escolas
-//  Equipment é o modelo do Sequelize para a tabela de equipamentos
-// require('../models') importa o índice dos modelos, que geralmente exporta todos os modelos definidos
+const Equipment = require('..//models/Equipment');
+const { Op, ForeignKeyConstraintError } = require('sequelize');
 
+exports.createTicket = async (req, res) => {
+    try {
+        const { titulo, descricao, prioridade, equipmentId } = req.body;
+        
+        if (!titulo || !descricao) {
+            return res.status(400).json({ message: 'Título e descrição são obrigatórios.' });
+        }
+        
+        if (!req.user || !req.user.id || !req.user.schoolId) {
+            console.error("ERRO (500): req.user incompleto para criar ticket.", req.user);
+            return res.status(500).json({ message: 'Falha na autenticação: Dados do usuário (ID/Escola) não encontrados na sessão.' });
+        }
 
-//exports.createTicket = async (req, res) => { ... } é a função que lida com a criação de novos chamados
-// Ela recebe os dados do chamado via req.body, cria o chamado no banco de dados e retorna os detalhes do chamado criado
-// A função é assíncrona para lidar com operações de banco de dados que são baseadas em promessas
-//req e res são os objetos de solicitação e resposta do Express.js
-// req.body contém os dados enviados pelo cliente (título, descrição, prioridade, equipmentId)
+        const newTicket = await Ticket.create({
+            titulo,
+            descricao,
+            status: 'aberto',
+            prioridade,
+            usuarioId: req.user.id,
+            schoolId: req.user.schoolId ,
+            equipmentId: equipmentId || null,
+        });
 
-exports.createTicket = async (req, res) => {//req e res são os objetos de solicitação e resposta do Express.js
-
-    try {
-        // Pega o ID do usuário autenticado do token (isso será feito pelo middleware)//middleware é que adiciona o objeto user ao req
-        // Assumimos que o middleware de autenticação adiciona req.user com as informações do usuário autenticado
-        // userId e schoolId são extraídos do objeto req.user
-         //req.user é definido no middleware de autenticação
-
-        // Extrai os dados do chamado do corpo da requisição
-        // titulo, descricao, prioridade e equipmentId são extraídos de req.body
-        const { titulo, descricao, prioridade, equipmentId } = req.body;
-         console.log('Dados do usuário a partir do token:', {
-            usuarioId: req.user.id,
-            schoolId: req.user.schoolId 
-        });          
-        // Verificação adicional, caso necessário
-        if (!titulo || !descricao) {// Verifica se título e descrição foram fornecidos
-            return res.status(400).json({ message: 'Título e descrição são obrigatórios.' });
-        }
-
-        const newTicket = await Ticket.create({// Cria um novo chamado no banco de dados
-            titulo,// Atribui o título do chamado
-            descricao,//    Atribui a descrição do chamado
-            status: 'aberto', // Define o status inicial
-            prioridade,// Atribui a prioridade do chamado
-            usuarioId: req.user.id, // Atribui o ID do usuário logado
-            schoolId: req.user.schoolId , // Atribui o ID da escola do usuário logado
-            equipmentId: equipmentId || null,// Atribui o ID do equipamento, se fornecido, ou null
-        });
-
-        res.status(201).json({ 
-            message: 'Chamado criado com sucesso.', 
-            ticket: newTicket 
-        });
-
-        
-    } catch (error) {
-        console.error('Erro ao criar chamado:', error);
-        res.status(500).json({ message: 'Erro no servidor.' });
-    }
+        res.status(201).json({ 
+            message: 'Chamado criado com sucesso.', 
+            ticket: newTicket 
+        });
+        
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeForeignKeyConstraintError') {
+            console.error('ERRO SEQUELIZE ao criar ticket:', error.message);
+            return res.status(400).json({ message: 'Erro de validação do banco de dados: ' + error.message });
+        }
+        console.error('Erro geral ao criar chamado:', error);
+        res.status(500).json({ message: 'Erro interno do servidor.' });
+    }
 };
 
-// Função para atualizar um ticket (atribuir a um técnico, alterar status, etc.)
+
 exports.updateTicket = async (req, res) => {
-    try {
-        const { id } = req.params; // Pega o ID do ticket da URL
-        const { titulo, descricao, prioridade, status, tecnicoId } = req.body; // Pega os dados a serem atualizados
+    try {
+        const { id } = req.params;
+        const { titulo, descricao, prioridade, status, tecnicoId, resolucao } = req.body;
+        const usuarioLogado = req.user;
 
-        // Busca o ticket pelo ID
-        const ticket = await Ticket.findByPk(id);
+        const ticket = await Ticket.findByPk(id);
 
-        if (!ticket) {
-            return res.status(404).json({ message: 'Chamado não encontrado.' });
-        }
+        if (!ticket) {
+            return res.status(404).json({ message: 'Chamado não encontrado.' });
+        }
+        
+        
+        const isAdmin = usuarioLogado.role === 'admin';
+        const isTechnician = usuarioLogado.role === 'technician';
+        const isAssignedTechnician = ticket.tecnicoId === usuarioLogado.id;
+        
+        if (!isAdmin && !isTechnician && usuarioLogado.role !== 'client') {
+            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para atualizar chamados.' });
+        }
+   
 
-        // Atualiza os campos do ticket com os dados fornecidos
-        await ticket.update({
-            titulo: titulo || ticket.titulo, // Se o título for fornecido, atualiza; caso contrário, mantém o atual
-            descricao: descricao || ticket.descricao,
-            prioridade: prioridade || ticket.prioridade,
-            status: status || ticket.status,
-            tecnicoId: tecnicoId || ticket.tecnicoId, // Atribui um novo técnico, se fornecido
-        });
+        let updates = { titulo, descricao, prioridade, status, resolucao };
 
-        res.status(200).json({
-            message: 'Chamado atualizado com sucesso.',
-            ticket
-        });
+        if (isTechnician) {
+            
+            if (tecnicoId === usuarioLogado.id) {
+                updates.tecnicoId = usuarioLogado.id;
+                
+                if (ticket.status === 'aberto') {
+                    updates.status = 'em andamento';
+                }
+                console.log(`Técnico ${usuarioLogado.id} aceitou/gerenciou o chamado ${id}`);
+            } else if (tecnicoId && tecnicoId !== usuarioLogado.id) {
+                 
+                 return res.status(403).json({ message: 'Técnico pode apenas aceitar o chamado para si mesmo.' });
+            }
+            
+            
+            if (isAssignedTechnician || (tecnicoId === usuarioLogado.id)) {
+                 updates = { 
+                    ...updates, 
+                    status: status || ticket.status, 
+                    prioridade: prioridade || ticket.prioridade, 
+                    resolucao: resolucao || ticket.resolucao 
+                 };
+            }
+            
+        } else if (usuarioLogado.role === 'client') {
+             
+             if (ticket.status !== 'aberto' || ticket.usuarioId !== usuarioLogado.id) {
+                 return res.status(403).json({ message: 'Cliente só pode editar seu próprio chamado se estiver aberto.' });
+             }
+             updates = { titulo, descricao, prioridade }; 
+        }
+        
+        
+        if (isAdmin) {
+            updates = { ...updates, tecnicoId: tecnicoId || ticket.tecnicoId };
+        }
 
-    } catch (error) {
-        console.error('Erro ao atualizar chamado:', error);
-        res.status(500).json({ message: 'Erro interno do servidor.' });
-    }
+
+        
+        Object.keys(updates).forEach(key => updates[key] === undefined && delete updates[key]);
+        
+        await ticket.update(updates);
+
+        res.status(200).json({
+            message: 'Chamado atualizado com sucesso.',
+            ticket
+        });
+
+    } catch (error) {
+        console.error('Erro ao atualizar chamado:', error);
+        res.status(500).json({ message: 'Erro interno do servidor.' });
+    }
 };
 
 // Função para buscar um ticket por ID, incluindo verificações de permissão
 exports.getTicketById = async (req, res) => {
-    try {
-        const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-        // Busca o ticket pelo ID, incluindo os dados do usuário associado
-        const ticket = await Ticket.findByPk(id, {
-            include: [{
-                model: Usuario,
-                as: 'creator',
-                attributes: ['id', 'nome', 'email', 'role']
-            }, {
-                model: Usuario,
-                as: 'technician',
-                attributes: ['id', 'nome', 'email', 'role']
-            }]
-        });
+        const ticket = await Ticket.findByPk(id, {
+            include: [{
+                model: Usuario,
+                as: 'creator',
+                attributes: ['id', 'nome', 'email', 'role', 'schoolId']
+            }, {
+                model: Usuario,
+                as: 'technician',
+                attributes: ['id', 'nome', 'email', 'role']
+            }, {
+                model: School,
+                attributes: ['nome']
+            }, {
+                model: Equipment,
+                as: 'Equipment',
+                attributes: ['brand'] 
+            }]
+        });
 
-        // Se o ticket não for encontrado, retorna 404
-        if (!ticket) {
-            return res.status(404).json({ message: 'Ticket não encontrado.' });
-        }
+        if (!ticket) {
+            return res.status(404).json({ message: 'Ticket não encontrado.' });
+        }
 
-        // Verifica a permissão do usuário para ver o ticket
-        const usuarioLogado = req.user;
-        const isAdmin = usuarioLogado.role === 'admin';
-        const isOwner = ticket.criadorId === usuarioLogado.id;
-        const isResponsible = ticket.responsavelId === usuarioLogado.id;
+        // Verifica a permissão para visualizar
+        const usuarioLogado = req.user;
+        const isAdmin = usuarioLogado.role === 'admin';
+        const isOwner = ticket.usuarioId === usuarioLogado.id;
+        const isResponsible = ticket.tecnicoId === usuarioLogado.id;
 
-        // Apenas admins, o criador ou o responsável podem ver o ticket
-        if (!isAdmin && !isOwner && !isResponsible) {
-            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para visualizar este ticket.' });
-        }
+        if (!isAdmin && !isOwner && !isResponsible) {
+            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para visualizar este ticket.' });
+        }
 
-        res.status(200).json(ticket);
-    } catch (error) {
-        console.error('Erro ao buscar ticket:', error);
-        res.status(500).json({ message: 'Erro no servidor.' });
-    }
+        res.status(200).json(ticket);
+    } catch (error) {
+        console.error('Erro ao buscar ticket:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
 };
 
 // Função para deletar um ticket
 exports.deleteTicket = async (req, res) => {
-    try {
-        const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-        // Busca o ticket no banco
-        const ticket = await Ticket.findByPk(id);
+        const ticket = await Ticket.findByPk(id);
 
-        if (!ticket) {
-            return res.status(404).json({ message: 'Chamado não encontrado.' });
-        }
+        if (!ticket) {
+            return res.status(404).json({ message: 'Chamado não encontrado.' });
+        }
 
-        // Verifica permissão: admin ou criador do chamado
-        const usuarioLogado = req.user;
-        const isAdmin = usuarioLogado.role === 'admin';
-        const isOwner = ticket.usuarioId === usuarioLogado.id;
+        
+        const usuarioLogado = req.user;
+        const isAdmin = usuarioLogado.role === 'admin';
+        const isOwner = ticket.usuarioId === usuarioLogado.id && ticket.status === 'aberto';
 
-        if (!isAdmin && !isOwner) {
-            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para excluir este chamado.' });
-        }
+        if (!isAdmin && !isOwner) {
+            return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem excluir chamados em andamento ou o criador se estiver aberto.' });
+        }
 
-        await ticket.destroy();
+        await ticket.destroy();
 
-        res.status(200).json({ message: 'Chamado removido com sucesso.' });
-    } catch (error) {
-        console.error('Erro ao remover chamado:', error);
-        res.status(500).json({ message: 'Erro no servidor.' });
-    }
+        res.status(200).json({ message: 'Chamado removido com sucesso.' });
+    } catch (error) {
+        if (error instanceof ForeignKeyConstraintError) {
+            console.error('Erro de Chave Estrangeira ao deletar ticket:', error.message);
+            return res.status(400).json({ message: 'Não é possível remover este chamado. Possui histórico de interações associado.' });
+        }
+        console.error('Erro ao remover chamado:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
 };
 
-// Função para listar todos os tickets com filtros e paginação
+
 exports.getAllTickets = async (req, res) => {
-    try {
-        // Extrai os filtros da query string (req.query)
-        const { status, prioridade, tecnicoId, page, limit } = req.query;
+    try {
+        const { status, prioridade, tecnicoId, page, limit, escolaId, fila } = req.query;
+        const usuarioLogado = req.user;
+        
+        const pageNumber = parseInt(page, 10) || 1;
+        const pageSize = parseInt(limit, 10) || 10;
+        const offset = (pageNumber - 1) * pageSize;
 
-        // Converte os parâmetros de paginação para números inteiros
-        const pageNumber = parseInt(page, 10) || 1;
-        const pageSize = parseInt(limit, 10) || 10;
-        const offset = (pageNumber - 1) * pageSize;
+        let filter = {};
+        if (status) filter.status = status;
+        if (prioridade) filter.prioridade = prioridade;
+        
+        if (usuarioLogado.role === 'client') {
+            // Cliente só vê seus próprios chamados, da sua escola.
+            filter.usuarioId = usuarioLogado.id;
+            filter.schoolId = usuarioLogado.schoolId;
 
-        // Constrói o objeto de filtros para o Sequelize
-        const filter = {};
-        if (status) {
-            filter.status = status;
-        }
-        if (prioridade) {
-            filter.prioridade = prioridade;
-        }
-        if (tecnicoId) {
-            filter.tecnicoId = tecnicoId;
-        }
+        } else if (usuarioLogado.role === 'technician') {
+            
+            if (fila === 'geral') {
+                // Fila geral (abertos e não atribuídos) De todas as escolas
+                filter.status = 'aberto';
+                filter.tecnicoId = { [Op.is]: null }; 
+            } else if (fila === 'meus') {
+                // Meus chamados (atribuídos a ele) De todas as escolas
+                filter.tecnicoId = usuarioLogado.id;
+                filter.status = { [Op.ne]: 'fechado' }; // Não mostra fechados
+            }
+          
+        } else if (usuarioLogado.role === 'admin') {
+            
+            if (escolaId) filter.schoolId = escolaId;
+            if (tecnicoId) filter.tecnicoId = tecnicoId;
+        }
 
-        const usuarioLogado = req.user; // Obtém o usuário do token
-        if (usuarioLogado.role !== 'admin') {
-            // Se não for admin, filtra para mostrar apenas os tickets do usuário logado
-            filter.usuarioId = usuarioLogado.id;
-        }
+        console.log('Filtros aplicados (Final):', filter);
 
-        console.log('Filtros aplicados:', filter);
+        // Busca os tickets no banco de dados com filtros e paginação
+        const { count, rows } = await Ticket.findAndCountAll({
+            where: filter,
+            limit: pageSize,
+            offset: offset,
+            order: [['createdAt', 'DESC']],
+            include: [
+                { model: Usuario, as: 'creator', attributes: ['id', 'nome', 'email', 'role'] },
+                { model: Usuario, as: 'technician', attributes: ['id', 'nome', 'email', 'role'] },
+                { model: School, attributes: ['nome'] },
+                { model: Equipment, as: 'Equipment', attributes: ['id', 'name', 'brand', 'model'] }
+            ]
+        });
 
-        // Busca os tickets no banco de dados com filtros e paginação
-        const { count, rows } = await Ticket.findAndCountAll({
-            where: filter,
-            limit: pageSize,
-            offset: offset,
-            include: [
-                {
-                    model: Usuario,
-                    as: 'creator',
-                    attributes: ['id', 'nome', 'email', 'role']
-                },
-                {
-                    model: Usuario,
-                    as: 'technician',
-                    attributes: ['id', 'nome', 'email', 'role']
-                },
-                {
-                    model: Equipment,
-                    as: 'Equipment',
-                    attributes: ['id', 'name', 'brand', 'model']
-                }
-            ]
-        });
+        // Retorna a lista de tickets com metadados de paginação
+        res.status(200).json({
+            totalTickets: count,
+            totalPages: Math.ceil(count / pageSize),
+            currentPage: pageNumber,
+            pageSize: pageSize,
+            tickets: rows
+        });
 
-        // DEBUG: Imprime os dados que vieram do banco para o console do servidor
-        console.log('DEBUG: Dados dos tickets retornados do banco:', JSON.stringify(rows, null, 2));
-
-        // Retorna a lista de tickets com metadados de paginação
-        res.status(200).json({
-            totalTickets: count,
-            totalPages: Math.ceil(count / pageSize), // total pages
-            currentPage: pageNumber,
-            pageSize: pageSize,
-            tickets: rows
-        });
-
-    } catch (error) {
-        console.error('Erro ao buscar todos os tickets:', error);
-        res.status(500).json({ message: 'Erro no servidor.' });
-    }
+    } catch (error) {
+        console.error('Erro ao buscar todos os tickets:', error);
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
 };

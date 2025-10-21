@@ -1,19 +1,18 @@
 // userController.js
 const Usuario = require('../models/Usuario');
 const bcrypt = require('bcryptjs');
+const { ForeignKeyConstraintError } = require('sequelize'); 
 
 // Função para listar todos os usuários (apenas para admins)
 exports.getAllUsers = async (req, res) => {
-        try {  
-            //Busca todos os usuários no banco de dados, excluindo a senha
-            const users = await Usuario.findAll({
-             //const users é uma variável que armazena a lista de usuários retornada pela consulta ao banco de dados
-             //await é usado para esperar a resolução da promessa retornada por Usuario.findAll
+    try { 
+        //Busca todos os usuários no banco de dados, excluindo a senha
+        const users = await Usuario.findAll({
             attributes: { exclude: ['senha'] } // Exclui o campo de senha dos resultados
-         });
+        });
         res.status(200).json(users); // Retorna a lista de usuários
     } catch (error) {
-         console.error('Erro ao buscar usuários:', error);
+        console.error('Erro ao buscar usuários:', error);
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };
@@ -24,10 +23,12 @@ exports.updateUser = async (req, res) => {
         // Pega o ID do usuário da URL e os dados do corpo da requisição
         const userId = req.params.id;
         const { nome, email, senha, role, schoolId } = req.body;
+        
+        const usuarioLogadoId = req.user.id.toString(); 
 
         // VERIFICAÇÃO DE PERMISSÃO:
         // O usuário logado só pode atualizar seu próprio perfil, a menos que seja um admin.
-        if (req.user.id !== userId && req.user.role !== 'admin') {// Se o ID do usuário logado não for igual ao ID do usuário a ser atualizado e ele não for admin
+        if (usuarioLogadoId !== userId && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para atualizar este usuário.' });
         }
 
@@ -66,9 +67,11 @@ exports.getUserById = async (req, res) => {
     try {
         const userId = req.params.id; // Pega o ID da URL
 
+        const usuarioLogadoId = req.user.id.toString(); 
+
         // VERIFICAÇÃO DE PERMISSÃO:
         // O usuário logado só pode ver seu próprio perfil, a menos que seja um admin.
-        if (req.user.id!== userId && req.user.role!== 'admin') {
+        if (usuarioLogadoId !== userId && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para visualizar este usuário.' });
         }
 
@@ -89,14 +92,16 @@ exports.getUserById = async (req, res) => {
 };
 
 
-// Função para remover um usuário
+// Função para remover um usuário 
 exports.deleteUser = async (req, res) => {
     try {
         const userId = req.params.id;
 
+        const usuarioLogadoId = req.user.id.toString(); 
+
         // VERIFICAÇÃO DE PERMISSÃO:
         // O usuário logado só pode deletar seu próprio perfil, a menos que seja um admin.
-        if (req.user.id !== userId && req.user.role !== 'admin') {
+        if (usuarioLogadoId !== userId && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para remover este usuário.' });
         }
 
@@ -111,8 +116,15 @@ exports.deleteUser = async (req, res) => {
         await user.destroy();
 
         res.status(200).json({ message: 'Usuário removido com sucesso.' });
+        
     } catch (error) {
-        console.error('Erro ao remover usuário:', error);
-        res.status(500).json({ message: 'Erro no servidor.' });
+        
+        if (error instanceof ForeignKeyConstraintError) {
+             console.error('Erro de Chave Estrangeira ao deletar usuário:', error.message);
+             return res.status(400).json({ message: 'Não é possível remover este usuário. Ele está associado a chamados ou outros registros.' });
+        }
+        
+        console.error('Erro geral ao remover usuário:', error);
+        res.status(500).json({ message: 'Erro interno do servidor.' });
     }
 };

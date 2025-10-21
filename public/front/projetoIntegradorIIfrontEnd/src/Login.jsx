@@ -1,4 +1,3 @@
-
 // src/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,26 +15,35 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // ... (sua lógica de login permanece a mesma)
+   
         try {
             const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
-            const data = await response.json();
-            if (response.ok) {
+
+            if (response.ok) { 
+                const data = await response.json();
+
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('userRole', data.user.role); 
+              
                 navigate('/solicitacoes');
+                
             } else {
-                setError(data.message || 'Falha no login');
+                const data = await response.json();
+                setError(data.message || `Falha no login. Código: ${response.status}`);
+                console.error('Falha no Login (Dados):', data);
             }
         } catch (err) {
-            setError('Falha de rede');
+            // Captura falhas de rede ou JSON malformado
+            setError('Falha de rede ou erro ao processar a resposta do servidor.');
+            console.error('Erro de Rede/Processamento:', err);
         }
     };
 
-   return (
+    return (
         <Container fluid className="d-flex justify-content-center align-items-center width:839 height:528 position-relative">
             <Row className="login-box shadow-lg">
                 <Col className="bg-white p-4 rounded-start d-flex flex-column justify-content-center align-items-center text-center">
@@ -53,7 +61,6 @@ function Login() {
                 <Col className="bg-primary text-white p-4 d-flex flex-column align-items-center justify-content-center text-center login-info-col">
                     <Image src={logo} alt="Logo" style={{ width: '136px', height: '125px' }} />
                     <p className="mt-4">Não possui acesso? Entre em contato com a nossa equipe</p>
-                    {/* Alterar para variant="outline-primary" para borda azul ou manter outline-light para borda branca */}
                     <Button variant="outline-light" className="w-100">Solicitar</Button> 
                 </Col>
             </Row>
