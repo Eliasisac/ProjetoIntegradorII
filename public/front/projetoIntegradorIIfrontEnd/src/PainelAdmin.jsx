@@ -1,192 +1,192 @@
 // src/PainelAdmin.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Spinner, Alert, Modal, Form, Row, Col } from 'react-bootstrap';
-import useSchools from './hooks/useSchools'; 
+import useSchools from './hooks/useSchools';
+
+import PainelTicketsAdmin from './PainelTicketsAdmin';
+import PainelEscolas from './PainelEscolas';
 
 const API_BASE = 'http://localhost:5000/api';
 
 const UserTable = ({ data, handleEdit, handleDelete }) => (
-    <Table hover responsive striped>
-        <thead className="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>School ID</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {data.map(item => (
-                <tr key={item.id}>
-                    <td>{item.id.substring(0, 8)}</td>
-                    <td>{item.nome}</td>
-                    <td>{item.email}</td>
-                    <td>{item.role}</td>
-                    <td>{item.schoolId ? item.schoolId.substring(0, 8) : 'N/A'}</td>
-                    <td>
-                        <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>
-                            Editar
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => handleDelete(item.id)}>
-                            Remover
-                        </Button>
-                    </td>
-                </tr>
-            ))}
-        </tbody>
-    </Table>
+  <Table hover responsive striped>
+    <thead className="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Escola</th>
+        <th>Localização</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {data.map(item => (
+        <tr key={item.id}>
+          <td>{item.id ? item.id.substring(0, 8) : '—'}</td>
+          <td>{item.nome || '—'}</td>
+          <td>{item.email || '—'}</td>
+          <td>{item.role || '—'}</td>
+          <td>{item.School?.nome || 'N/A'}</td>
+          <td>{item.School?.endereco || 'N/A'}</td>
+          <td>
+            <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>Editar</Button>
+            <Button variant="danger" size="sm" onClick={() => handleDelete(item.id)}>Remover</Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </Table>
 );
 
 const EquipmentTable = ({ data, handleEdit, handleDelete }) => (
-    <Table hover responsive striped>
-        <thead className="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Marca</th>
-                <th>Status</th>
-                <th>Tipo</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {data.map(item => (
-                <tr key={item.id}>
-                    <td>{item.id.substring(0, 8)}</td>
-                    <td>{item.name}</td>
-                    <td>{item.brand}</td>
-                    <td>{item.status}</td>
-                    <td>{item.type}</td>
-                    <td>
-                        <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>
-                            Editar
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => handleDelete(item.id)}>
-                            Remover
-                        </Button>
-                    </td>
-                </tr>
-            ))}
-        </tbody>
-    </Table>
+  <Table hover responsive striped>
+    <thead className="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Marca</th>
+        <th>Status</th>
+        <th>Tipo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {data.map(item => (
+        <tr key={item.id}>
+          <td>{item.id ? item.id.substring(0, 8) : '—'}</td>
+          <td>{item.name || '—'}</td>
+          <td>{item.brand || '—'}</td>
+          <td>{item.status || '—'}</td>
+          <td>{item.type || '—'}</td>
+          <td>
+            <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>Editar</Button>
+            <Button variant="danger" size="sm" onClick={() => handleDelete(item.id)}>Remover</Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </Table>
 );
 
-
 const PainelAdmin = ({ view }) => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editItem, setEditItem] = useState(null);
-    const isUserView = view === 'users';
-    const endpoint = isUserView ? 'users' : 'equipments';
-    const title = isUserView ? 'Gerenciamento de Usuários' : 'Gerenciamento de Equipamentos';
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
-    const { schools, loading: loadingSchools, error: errorSchools, refetch } = useSchools();
+  const isUserView = view === 'users';
+  const endpoint = isUserView ? 'users' : 'equipments';
+  const title = isUserView ? 'Gerenciamento de Usuários' : 'Gerenciamento de Equipamentos';
 
-    const fetchData = async () => {
-        setLoading(true);
-        const token = localStorage.getItem('token');
-        const userRole = localStorage.getItem('userRole');
-        
-        if (!token || userRole !== 'admin') {
-            setError('Acesso negado. Token ou permissão de Admin ausente.');
-            setLoading(false);
-            return;
-        }
+  const { schools, loading: loadingSchools, error: errorSchools, refetch } = useSchools();
 
-        try {
+  const fetchData = async () => {
+    setLoading(true);
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('userRole');
+
+    if (!token || userRole !== 'admin') {
+      setError('Acesso negado. Token ou permissão de Admin ausente.');
+      setLoading(false);
+      return;
+    }
+
+    try {
             // Garante que o hook de escolas recarregue junto com os dados da tabela
-            refetch(); 
+            refetch();
 
-            const response = await fetch(`${API_BASE}/${endpoint}`, {
-                headers: { 'Authorization': `Bearer ${token}` } 
-            });
-            
-            if (response.status === 403) {
-                 setError('Acesso Negado. Você não possui permissão de Administrador.');
-                 setLoading(false);
-                 return;
-            }
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Erro ao buscar ${title}`);
-            }
-            
-            const result = await response.json();
-            setData(result); 
+      const response = await fetch(`${API_BASE}/${endpoint}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+      if (response.status === 403) {
+        setError('Acesso Negado. Você não possui permissão de Administrador.');
+        setLoading(false);
+        return;
+      }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Erro ao buscar ${title}`);
+      }
 
-    useEffect(() => {
-        fetchData();
-    }, [view]);
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err.message || String(err));
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleEdit = (item) => {
-        setEditItem(item);
-        setShowModal(true);
-    };
+  useEffect(() => {
+    fetchData();
+  }, [view]);
 
-    const handleDelete = async (itemId) => {
-        if (!window.confirm(`Tem certeza que deseja remover este item?`)) return;
+  const handleEdit = (item) => {
+    setEditItem(item);
+    setShowModal(true);
+  };
 
-        const token = localStorage.getItem('token');
-        try {
-            const response = await fetch(`${API_BASE}/${endpoint}/${itemId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Falha ao deletar.');
-            
-            fetchData();
-            alert('Item removido com sucesso!');
-        } catch (err) {
-            alert(`Erro ao deletar: ${err.message}`);
-        }
-    };
+  const handleDelete = async (itemId) => {
+    if (!window.confirm(`Tem certeza que deseja remover este item?`)) return;
 
-    if (loading) return <Spinner animation="border" className="m-5" />;
-    if (error || errorSchools) return <Alert variant="danger" className="m-5">Erro: {error || errorSchools}</Alert>;
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${API_BASE}/${endpoint}/${itemId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Falha ao deletar.');
 
-    return (
-        <div className="p-4">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h4>{title}</h4>
-                <Button variant="success" onClick={() => handleEdit(null)}>
-                    <i className="bi bi-plus-circle me-2"></i> Adicionar Novo
-                </Button>
-            </div>
-            
-            {isUserView ? (
-                <UserTable data={data} handleEdit={handleEdit} handleDelete={handleDelete} />
-            ) : (
-                <EquipmentTable data={data} handleEdit={handleEdit} handleDelete={handleDelete} />
-            )}
-            
-            <AdminEditModal 
-                show={showModal} 
-                handleClose={() => setShowModal(false)}
-                item={editItem} 
-                isUserView={isUserView}
-                onSave={fetchData}
-                schools={schools} 
-                loadingSchools={loadingSchools}
-            />
-        </div>
-    );
+      fetchData();
+      alert('Item removido com sucesso!');
+    } catch (err) {
+      alert(`Erro ao deletar: ${err.message}`);
+    }
+  };
+
+  if (view === 'tickets') {
+    return <PainelTicketsAdmin />;
+  }
+  if (view === 'gerenciarEscolas') {
+    return <PainelEscolas />;
+  }
+
+  if (loading) return <Spinner animation="border" className="m-5" />;
+  if (error || errorSchools) return <Alert variant="danger" className="m-5">Erro: {error || errorSchools}</Alert>;
+
+  return (
+    <div className="p-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h4>{title}</h4>
+        <Button variant="success" onClick={() => handleEdit(null)}>
+          <i className="bi bi-plus-circle me-2"></i> Adicionar Novo
+        </Button>
+      </div>
+
+      {isUserView ? (
+        <UserTable data={data} handleEdit={handleEdit} handleDelete={handleDelete} />
+      ) : (
+        <EquipmentTable data={data} handleEdit={handleEdit} handleDelete={handleDelete} />
+      )}
+
+      <AdminEditModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        item={editItem}
+        isUserView={isUserView}
+        onSave={fetchData}
+        schools={schools}
+        loadingSchools={loadingSchools}
+      />
+    </div>
+  );
 };
 
 export default PainelAdmin;
-
-
 
 const AdminEditModal = ({ show, handleClose, item, isUserView, onSave, schools, loadingSchools }) => {
     const currentItem = item || {}; 

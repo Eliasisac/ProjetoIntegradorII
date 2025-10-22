@@ -1,3 +1,5 @@
+// src/PainelSolicitacoes.jsx
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
@@ -26,7 +28,7 @@ function PainelSolicitacoes() {
         setUserRole(role);
         
         if (role === 'admin') {
-            setCurrentView('gerenciarUsuarios'); 
+            setCurrentView('tickets'); 
         } else if (role === 'technician') {
             setCurrentView('filaGeral');
         } else if (role === 'client') {
@@ -52,11 +54,11 @@ function PainelSolicitacoes() {
         
         switch (userRole) {
             case 'admin':
-
+                if (currentView === 'tickets') return <PainelAdmin view="tickets" />;
                 if (currentView === 'gerenciarUsuarios') return <PainelAdmin view="users" />;
                 if (currentView === 'gerenciarEquipamentos') return <PainelAdmin view="equipments" />;
-                if (currentView === 'gerenciarEscolas') return <PainelEscolas />;
-                return <div>Admin - Selecione uma opção no menu.</div>; 
+                if (currentView === 'gerenciarEscolas') return <PainelAdmin view="gerenciarEscolas" />;
+                return <div>Admin - Selecione uma opção no menu.</div>;
 
             case 'technician':
                 if (currentView === 'filaGeral') return <PainelTecnico view="filaGeral" />;
@@ -73,29 +75,31 @@ function PainelSolicitacoes() {
     };
 
     const renderSidebar = () => (
-        <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+        <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`} style={{ zIndex: 1030 }}> 
             <h2>
                 <i className="bi bi-grid" onClick={toggleSidebar} style={{ cursor: 'pointer' }}></i>
                 <span> Menu</span>
             </h2>
             
-            {/* Menu Admin ATUALIZADO */}
+            {/* Menu Admin */}
             {userRole === 'admin' && (
                 <>
+                    <a href="#" onClick={() => setCurrentView('tickets')} className={currentView === 'tickets' ? 'active' : ''}>
+                        <i className="bi bi-bar-chart-line"></i> <span>Visão Geral de Chamados</span>
+                    </a>
                     <a href="#" onClick={() => setCurrentView('gerenciarUsuarios')} className={currentView === 'gerenciarUsuarios' ? 'active' : ''}>
                         <i className="bi bi-people"></i> <span>Gerenciar Usuários</span>
                     </a>
                     <a href="#" onClick={() => setCurrentView('gerenciarEquipamentos')} className={currentView === 'gerenciarEquipamentos' ? 'active' : ''}>
                         <i className="bi bi-pc-display"></i> <span>Gerenciar Equipamentos</span>
                     </a>
-                    {/* CRÍTICO: Novo Link para Escolas */}
-                     <a href="#" onClick={() => setCurrentView('gerenciarEscolas')} className={currentView === 'gerenciarEscolas' ? 'active' : ''}>
+                    <a href="#" onClick={() => setCurrentView('gerenciarEscolas')} className={currentView === 'gerenciarEscolas' ? 'active' : ''}>
                         <i className="bi bi-building"></i> <span>Gerenciar Escolas</span>
                     </a>
                 </>
             )}
 
-            {/* Menu Técnico (MANTIDO) */}
+            {/* Menu Técnico */}
             {userRole === 'technician' && (
                 <>
                     <a href="#" onClick={() => setCurrentView('filaGeral')} className={currentView === 'filaGeral' ? 'active' : ''}>
@@ -107,7 +111,7 @@ function PainelSolicitacoes() {
                 </>
             )}
 
-            {/* Menu Cliente (MANTIDO) */}
+            {/* Menu Cliente */}
             {userRole === 'client' && (
                  <a href="#" onClick={() => setCurrentView('meusChamados')} className={currentView === 'meusChamados' ? 'active' : ''}>
                     <i className="bi bi-ticket-detailed"></i> <span>Meus Chamados</span>
@@ -125,7 +129,8 @@ function PainelSolicitacoes() {
     return (
         <div className={`painel-container ${isSidebarCollapsed ? 'collapsed' : ''}`}>
             {renderSidebar()}
-            <div className="main-content">
+            {}
+            <div className={`main-content ${isSidebarCollapsed ? 'expanded' : ''}`}>
                 <header className="main-header">
                     <h1>Painel de Chamados</h1>
                 </header>
